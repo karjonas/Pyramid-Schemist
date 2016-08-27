@@ -29,7 +29,7 @@ Scene::Scene() {
   e.pos_col_exact = 10.5;
 
   e.image = enemy_img0;
-  enemies.push_back(e);
+  pyramid_enemies[0].push_back(e);
 }
 
   {
@@ -42,7 +42,7 @@ Scene::Scene() {
 
     e.image = enemy_img0;
     e.direction_x = 1;
-    enemies.push_back(e);
+    pyramid_enemies[0].push_back(e);
   }
 
 //{
@@ -62,19 +62,34 @@ Scene::Scene() {
 
 }
 
-void Scene::tick(ALLEGRO_KEYBOARD_STATE* kbd_state) {
+void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
   double now = al_get_time();
 
-  bool left = al_key_down(kbd_state,ALLEGRO_KEY_LEFT) || al_key_down(kbd_state, ALLEGRO_KEY_A);
-  bool right = al_key_down(kbd_state,ALLEGRO_KEY_RIGHT) || al_key_down(kbd_state, ALLEGRO_KEY_D);
-  bool up = al_key_down(kbd_state,ALLEGRO_KEY_UP) || al_key_down(kbd_state, ALLEGRO_KEY_W);
-  bool down = al_key_down(kbd_state,ALLEGRO_KEY_DOWN) || al_key_down(kbd_state, ALLEGRO_KEY_S);
-  bool hole = al_key_down(kbd_state,ALLEGRO_KEY_SPACE) || al_key_down(kbd_state, ALLEGRO_KEY_H);
+  bool left  = key_pressed[ALLEGRO_KEY_LEFT ] || key_pressed[ALLEGRO_KEY_A];
+  bool right = key_pressed[ALLEGRO_KEY_RIGHT] || key_pressed[ALLEGRO_KEY_D];
+  bool up    = key_pressed[ALLEGRO_KEY_UP   ] || key_pressed[ALLEGRO_KEY_W];
+  bool down  = key_pressed[ALLEGRO_KEY_DOWN ] || key_pressed[ALLEGRO_KEY_S];
+  bool hole  = key_pressed[ALLEGRO_KEY_SPACE];
 
-  if ((now - last_press_time >= 0.1) && (left || right || up || down)) {
+  bool next_pyr = key_pressed[ALLEGRO_KEY_H];
+  bool prev_pyr = key_pressed[ALLEGRO_KEY_J];
+
+  if ((now - last_press_time >= 0.1) && (left || right || up || down || next_pyr || prev_pyr)) {
     move_selector(left ? -1 : (right ? 1 : 0), up ? 1 : (down ? -1 : 0) );
+    if (next_pyr)
+      curr_pyramid++;
+    if (prev_pyr)
+      curr_pyramid--;
+
+    if (curr_pyramid < 0)
+      curr_pyramid = 3;
+
+    curr_pyramid = curr_pyramid % 4;
+
     last_press_time = now;
   }
+
+  auto& pyr = pyramids[curr_pyramid];
 
   if (hole && ((now - last_hole_time) > HOLE_RETRY_TIME)
       && pyr.invert_block_at(selector_pos.first, selector_pos.second, 5.0)) {
@@ -83,14 +98,15 @@ void Scene::tick(ALLEGRO_KEYBOARD_STATE* kbd_state) {
 
   double dt = std::min(0.05, now - last_update);
 
-  pyr.update(dt);
-  update_enemies(dt);
-
+  for (int i = 0; i < 4; i++) {
+    pyramids[i].update(dt);
+    update_enemies(dt, pyramids[i], pyramid_enemies[i]);
+  }
 
   last_update = now;
 }
 
-void Scene::update_enemies(double dt) {
+void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies) {
 
   for (auto it = enemies.begin(); it != enemies.end(); it++) {
     BlockType block = pyr.get_block_at(it->pos_col, it->pos_row);
@@ -172,12 +188,13 @@ void Scene::draw() {
   constexpr int offsetw = (L_WIDTH - totw) / 2;
   constexpr int offseth = (L_HEIGHT - toth) / 2;
 
+  auto& pyr = pyramids[curr_pyramid];
   pyr.draw();
 
   al_draw_bitmap(hero_img, offsetw + w*6, L_HEIGHT - (offseth + h*7), 0);
 
 
-  for (auto& e : enemies) {
+  for (auto& e : pyramid_enemies[curr_pyramid]) {
       al_draw_bitmap(e.image, offsetw + w*e.pos_col_exact -w/2, L_HEIGHT - (offseth + h*e.pos_row_exact), 0);
       int x1 = offsetw + e.pos_col*w;
       int y1 = L_HEIGHT - (offseth + h*e.pos_row);
@@ -196,14 +213,14 @@ void Scene::move_selector(int col_dt, int row_dt) {
   selector_pos.second += row_dt;
 
  if (selector_pos.first >= PYR_COLS)
-   selector_pos.first = 0;
+   selector_pos.first = PYR_COLS - 1;
 
  if (selector_pos.second >= PYR_ROWS)
-   selector_pos.second = 0;
+   selector_pos.second =  PYR_ROWS -1;
 
  if (selector_pos.first < 0)
-   selector_pos.first = (PYR_COLS - 1);
+   selector_pos.first = 0;
 
  if (selector_pos.second < 0)
-   selector_pos.second = (PYR_ROWS - 1);
+   selector_pos.second = 0;
 }

@@ -25,7 +25,6 @@ Pyramid::Pyramid() {
   for (auto& row : inverted_block) {
       row.fill(0.0);
   }
-
 }
 
 void Pyramid::draw() {

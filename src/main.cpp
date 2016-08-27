@@ -52,9 +52,9 @@ void init(void) {
     abort_game("failed to init image addon!\n");
   }
 
-  timer = al_create_timer(1.0 / 60);
-  if (!timer)
-    abort_game("Failed to create timer");
+//  timer = al_create_timer(1.0 / 60);
+//  if (!timer)
+//    abort_game("Failed to create timer");
 
   ALLEGRO_DISPLAY_MODE disp_data;
   al_get_display_mode(0, &disp_data);
@@ -70,7 +70,7 @@ void init(void) {
     abort_game("Failed to create event queue");
 
   al_register_event_source(event_queue, al_get_keyboard_event_source());
-  al_register_event_source(event_queue, al_get_timer_event_source(timer));
+//  al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_register_event_source(event_queue, al_get_display_event_source(display));
 
   al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
@@ -97,30 +97,32 @@ void game_loop(void) {
   Scene scene;
   ALLEGRO_KEYBOARD_STATE kbd_state;
 
-  bool redraw = true;
-  al_start_timer(timer);
+  bool key_pressed[ALLEGRO_KEY_MAX] = {0};
+  bool key_down[ALLEGRO_KEY_MAX] = {0};
 
   while (!done) {
-    ALLEGRO_EVENT event;
-    al_wait_for_event(event_queue, &event);
-
-    if (event.type == ALLEGRO_EVENT_TIMER) {
-      al_get_keyboard_state(&kbd_state);
-      scene.tick(&kbd_state);
-      redraw = true;
-    } else if (event.type == ALLEGRO_EVENT_KEY_DOWN &&
-               event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
-      done = true;
-    } else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-      done = true;
+    ALLEGRO_EVENT ev;
+    while (al_get_next_event(event_queue, &ev)) {
+      if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+        key_pressed[ev.keyboard.keycode] = true;
+        key_down[ev.keyboard.keycode] = true;
+      } else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
+        key_down[ev.keyboard.keycode] = false;
+      } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+        done = false;
+      }
     }
 
-    if (redraw && al_is_event_queue_empty(event_queue)) {
-      redraw = false;
-      al_clear_to_color(al_map_rgb(0,0,0));
-      scene.draw();
-      al_flip_display();
-    }
+    if (key_down[ALLEGRO_KEY_ESCAPE])
+      done = false;
+
+    scene.tick(key_pressed);
+    al_clear_to_color(al_map_rgb(0,0,0));
+    scene.draw();
+    al_flip_display();
+
+    for (auto &pressed : key_pressed)
+      pressed = false;
   }
 }
 
