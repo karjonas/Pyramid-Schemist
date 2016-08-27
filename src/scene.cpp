@@ -16,18 +16,21 @@ Scene::Scene() {
 {
   Enemy e;
   e.pos = {5,3};
+  e.pos_exact = {5,3};
   e.image = enemy_img0;
   enemies.push_back(e);
 }
 {
   Enemy e;
   e.pos = {6,2};
+  e.pos_exact = {6,2};
   e.image = enemy_img1;
   enemies.push_back(e);
 }
 {
   Enemy e;
   e.pos = {3,0};
+  e.pos_exact = {3,0};
   e.image = enemy_img2;
   enemies.push_back(e);
 }
@@ -35,18 +38,38 @@ Scene::Scene() {
 }
 
 void Scene::tick(ALLEGRO_KEYBOARD_STATE* kbd_state) {
+  double now = al_get_time();
+
   bool left = al_key_down(kbd_state,ALLEGRO_KEY_LEFT) || al_key_down(kbd_state, ALLEGRO_KEY_A);
   bool right = al_key_down(kbd_state,ALLEGRO_KEY_RIGHT) || al_key_down(kbd_state, ALLEGRO_KEY_D);
   bool up = al_key_down(kbd_state,ALLEGRO_KEY_UP) || al_key_down(kbd_state, ALLEGRO_KEY_W);
   bool down = al_key_down(kbd_state,ALLEGRO_KEY_DOWN) || al_key_down(kbd_state, ALLEGRO_KEY_S);
 
-  double now = al_get_time();
 
   if ((now - last_press_time >= 0.1) && (left || right || up || down)) {
     move_selector(left ? -1 : (right ? 1 : 0), up ? 1 : (down ? -1 : 0) );
     last_press_time = now;
   }
+
+  double dt = std::min(0.05, now - last_update);
+
+  update_enemies(dt);
+
+
+  last_update = now;
 }
+
+void Scene::update_enemies(double dt) {
+
+  for (Enemy& e : enemies) {
+    if (e.state == EnemyState::WALKING) {
+        e.pos_exact.first += static_cast<double>(e.direction)*dt*e.speed;
+        e.pos.first = e.pos_exact.first;
+    }
+  }
+
+}
+
 
 void Scene::draw() {
   constexpr int w = 21;
@@ -61,7 +84,7 @@ void Scene::draw() {
   pyr.draw();
 
   for (auto& e : enemies) {
-      al_draw_bitmap(e.image, offsetw + w*e.pos.first, L_HEIGHT - (offseth + h*e.pos.second), 0);
+      al_draw_bitmap(e.image, offsetw + w*e.pos_exact.first, L_HEIGHT - (offseth + h*e.pos_exact.second), 0);
   }
 
   al_draw_bitmap(selector_img, offsetw + w*selector_pos.first, L_HEIGHT - (offseth + h*selector_pos.second), 0);
