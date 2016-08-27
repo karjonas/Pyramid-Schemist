@@ -15,6 +15,8 @@ public:
 
   void draw();
 
+  BlockType get_block_at(int col, int row) ;
+
   ALLEGRO_BITMAP *block_img;
   ALLEGRO_BITMAP *ladder_img;
   std::array<std::array<BlockType, PYR_COLS>, PYR_ROWS> blocks;

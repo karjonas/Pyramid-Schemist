@@ -43,3 +43,12 @@ void Pyramid::draw() {
     }
   }
 }
+
+BlockType Pyramid::get_block_at(int col, int row) {
+  assert(col >= 0);
+  assert(col < PYR_COLS);
+  assert(row >= 0);
+  assert(row < PYR_ROWS);
+
+  return blocks[row][col];
+}
