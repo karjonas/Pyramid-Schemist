@@ -7,6 +7,31 @@
 
 Scene::Scene() {
   selector_img = al_load_bitmap("img/selector.png");
+
+
+  enemy_img0 = al_load_bitmap("img/enemy.png");
+  enemy_img1 = al_load_bitmap("img/enemy1.png");
+  enemy_img2 = al_load_bitmap("img/enemy2.png");
+
+{
+  Enemy e;
+  e.pos = {5,3};
+  e.image = enemy_img0;
+  enemies.push_back(e);
+}
+{
+  Enemy e;
+  e.pos = {6,2};
+  e.image = enemy_img1;
+  enemies.push_back(e);
+}
+{
+  Enemy e;
+  e.pos = {3,0};
+  e.image = enemy_img2;
+  enemies.push_back(e);
+}
+
 }
 
 void Scene::tick(ALLEGRO_KEYBOARD_STATE* kbd_state) {
@@ -18,12 +43,9 @@ void Scene::tick(ALLEGRO_KEYBOARD_STATE* kbd_state) {
   double now = al_get_time();
 
   if ((now - last_press_time >= 0.1) && (left || right || up || down)) {
-    move_selector(left ? -1 : (right ? 1 : 0), up ? -1 : (down ? 1 : 0) );
+    move_selector(left ? -1 : (right ? 1 : 0), up ? 1 : (down ? -1 : 0) );
     last_press_time = now;
   }
-
-
-
 }
 
 void Scene::draw() {
@@ -37,7 +59,12 @@ void Scene::draw() {
   constexpr int offseth = (L_HEIGHT - toth) / 2;
 
   pyr.draw();
-  al_draw_bitmap(selector_img, offsetw + w*selector_pos.first, offseth + h*selector_pos.second, 0);
+
+  for (auto& e : enemies) {
+      al_draw_bitmap(e.image, offsetw + w*e.pos.first, L_HEIGHT - (offseth + h*e.pos.second), 0);
+  }
+
+  al_draw_bitmap(selector_img, offsetw + w*selector_pos.first, L_HEIGHT - (offseth + h*selector_pos.second), 0);
 
 }
 
@@ -56,7 +83,4 @@ void Scene::move_selector(int col_dt, int row_dt) {
 
  if (selector_pos.second < 0)
    selector_pos.second = (PYR_ROWS - 1);
-
-
-
 }

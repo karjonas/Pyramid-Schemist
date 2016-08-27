@@ -1,8 +1,10 @@
 #pragma once
 
 #include "pyramid.h"
+#include "enemy.h"
 
 #include <utility>
+#include <vector>
 
 struct ALLEGRO_KEYBOARD_STATE;
 
@@ -20,4 +22,9 @@ public:
   std::pair<int, int> selector_pos = {4,3};
   ALLEGRO_BITMAP *selector_img;
   double last_press_time = 0;
+  std::vector<Enemy> enemies;
+
+  ALLEGRO_BITMAP *enemy_img0;
+  ALLEGRO_BITMAP *enemy_img1;
+  ALLEGRO_BITMAP *enemy_img2;
 };
