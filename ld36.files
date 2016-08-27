@@ -9,3 +9,7 @@ src/main.cpp
 CMakeLists.txt
 LICENSE
 README.md
+src/pyramid.h
+src/pyramid.cpp
+src/block.h
+src/layout.h

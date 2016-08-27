@@ -4,6 +4,7 @@ project(ld36)
 
 set(SOURCES_CPP
   src/main.cpp
+  src/pyramid.cpp
 )
 
 add_executable(ld36 ${SOURCES_CPP})
@@ -15,6 +16,7 @@ set(LIBS
   allegro_ttf
   allegro_audio
   allegro_acodec
+  allegro_image
 )
 
 target_link_libraries(ld36 ${LIBS})
