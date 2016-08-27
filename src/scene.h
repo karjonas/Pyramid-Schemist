@@ -31,4 +31,6 @@ public:
   ALLEGRO_BITMAP *enemy_img0;
   ALLEGRO_BITMAP *enemy_img1;
   ALLEGRO_BITMAP *enemy_img2;
+
+  double last_hole_time = 0.0;
 };
