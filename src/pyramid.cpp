@@ -7,23 +7,16 @@
 
 Pyramid::Pyramid() {
   block_img = al_load_bitmap("img/block.png");
+  ladder_img = al_load_bitmap("img/ladder.png");
 
-  blocks = {{{{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-               EMPTY, EMPTY, EMPTY, EMPTY}},
-             {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY,
-               EMPTY, EMPTY, EMPTY, EMPTY}},
-             {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, EMPTY,
-               EMPTY, EMPTY, EMPTY, EMPTY}},
-             {{EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK,
-               EMPTY, EMPTY, EMPTY, EMPTY}},
-             {{EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK,
-               BLOCK, EMPTY, EMPTY, EMPTY}},
-             {{EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK,
-               BLOCK, BLOCK, EMPTY, EMPTY}},
-             {{EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK,
-               BLOCK, BLOCK, BLOCK, EMPTY}},
-             {{BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK,
-               BLOCK, BLOCK, BLOCK, BLOCK}}}};
+  blocks = {{{{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
+             {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
+             {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, LADDER, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
+             {{EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY}},
+             {{EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY}},
+             {{EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY}},
+             {{EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY}},
+             {{BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK}}}};
 }
 
 void Pyramid::draw() {
@@ -41,6 +34,10 @@ void Pyramid::draw() {
       if (blocks[r][c] == BLOCK) {
         al_draw_bitmap(block_img, offsetw + w * c, offseth + h * r, 0);
       }
+      else if (blocks[r][c] == LADDER) {
+        al_draw_bitmap(ladder_img, offsetw + w * c, offseth + h * r, 0);
+      }
+
     }
   }
 }
