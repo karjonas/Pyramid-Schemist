@@ -18,4 +18,5 @@ public:
   ALLEGRO_BITMAP *block_img;
   ALLEGRO_BITMAP *ladder_img;
   std::array<std::array<BlockType, PYR_COLS>, PYR_ROWS> blocks;
+
 };

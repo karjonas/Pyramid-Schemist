@@ -1,4 +1,4 @@
-#include "pyramid.h"
+#include "scene.h"
 
 #include <algorithm>
 #include <stdio.h>
@@ -94,19 +94,19 @@ void shutdown(void) {
 }
 
 void game_loop(void) {
-  bool redraw = true;
-  al_start_timer(timer);
-
+  Scene scene;
   ALLEGRO_KEYBOARD_STATE kbd_state;
 
-  Pyramid pyr;
+  bool redraw = true;
+  al_start_timer(timer);
 
   while (!done) {
     ALLEGRO_EVENT event;
     al_wait_for_event(event_queue, &event);
 
     if (event.type == ALLEGRO_EVENT_TIMER) {
-      pyr.draw();
+      al_get_keyboard_state(&kbd_state);
+      scene.tick(&kbd_state);
       redraw = true;
     } else if (event.type == ALLEGRO_EVENT_KEY_DOWN &&
                event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
@@ -117,6 +117,8 @@ void game_loop(void) {
 
     if (redraw && al_is_event_queue_empty(event_queue)) {
       redraw = false;
+      al_clear_to_color(al_map_rgb(0,0,0));
+      scene.draw();
       al_flip_display();
     }
   }
