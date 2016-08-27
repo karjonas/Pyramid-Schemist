@@ -18,6 +18,7 @@ Scene::Scene() {
   enemy_img0 = al_load_bitmap("img/enemy.png");
   enemy_img1 = al_load_bitmap("img/enemy1.png");
   enemy_img2 = al_load_bitmap("img/enemy2.png");
+  hero_img = al_load_bitmap("img/hero.png");
 
 {
   Enemy e;
@@ -135,7 +136,7 @@ void Scene::update_enemies(double dt) {
           e.state = block_next != LADDER ? EnemyState::WALKING : EnemyState::CLIMBING;
       }
     } else if (e.state == EnemyState::FALLING) {
-      e.pos_row_exact -= dt*e.speed;
+      e.pos_row_exact -= dt*e.fall_speed;
 
       bool fall_done = static_cast<int>(std::ceil(e.pos_row_exact)) < e.pos_row;
       if (fall_done) {
@@ -163,6 +164,9 @@ void Scene::draw() {
 
   pyr.draw();
 
+  al_draw_bitmap(hero_img, offsetw + w*6, L_HEIGHT - (offseth + h*7), 0);
+
+
   for (auto& e : enemies) {
       al_draw_bitmap(e.image, offsetw + w*e.pos_col_exact -w/2, L_HEIGHT - (offseth + h*e.pos_row_exact), 0);
       int x1 = offsetw + e.pos_col*w;
@@ -170,7 +174,7 @@ void Scene::draw() {
       int x2 = x1 + w;
       int y2 = y1 + h;
 
-//      al_draw_rectangle(x1+0.5,y1+0.5,x2+0.5,y2+0.5,al_map_rgb(255,0,0), 1.0);
+      al_draw_rectangle(x1+0.5,y1+0.5,x2+0.5,y2+0.5,al_map_rgb(255,0,0), 1.0);
     }
 
   al_draw_bitmap(selector_img, offsetw + w*selector_pos.first, L_HEIGHT - (offseth + h*selector_pos.second), 0);

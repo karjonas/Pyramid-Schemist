@@ -19,6 +19,7 @@ struct Enemy {
   int direction_y =  0; // -1=down, 1=up, 0=still
 
   double speed = 2.5; // blocks per second
+  double fall_speed = 4;
 
 
   EnemyState state = EnemyState::WALKING;
