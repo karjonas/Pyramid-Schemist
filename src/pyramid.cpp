@@ -9,9 +9,10 @@ Pyramid::Pyramid() {
   block_img = al_load_bitmap("img/block.png");
   block_in_img = al_load_bitmap("img/block_in.png");
   ladder_img = al_load_bitmap("img/ladder.png");
+  snake_img = al_load_bitmap("img/snake_block.png");
 
   blocks = {{
-              {{BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK}},
+              {{BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, SNAKE, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK}},
               {{EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY}},
               {{EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY}},
               {{EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY}},
@@ -46,6 +47,8 @@ void Pyramid::draw() {
         al_draw_bitmap(ladder_img, offsetw + w * c, L_HEIGHT - (offseth + h * r), 0);
       } else if (blocks[r][c] == BLOCK_IN) {
         al_draw_bitmap(block_in_img, offsetw + w * c, L_HEIGHT - (offseth + h * r), 0);
+      } else if (blocks[r][c] == SNAKE) {
+        al_draw_bitmap(snake_img, offsetw + w * c, L_HEIGHT - (offseth + h * r), 0);
       }
     }
   }

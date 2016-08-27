@@ -92,8 +92,18 @@ void Scene::tick(ALLEGRO_KEYBOARD_STATE* kbd_state) {
 
 void Scene::update_enemies(double dt) {
 
-  for (Enemy& e : enemies) {
-    BlockType block = pyr.get_block_at(e.pos_col, e.pos_row);
+  for (auto it = enemies.begin(); it != enemies.end(); it++) {
+    BlockType block = pyr.get_block_at(it->pos_col, it->pos_row);
+
+    if (block == SNAKE) {
+      it = enemies.erase(it);
+      if (it == enemies.end()) {
+          break;
+      }
+    }
+
+    Enemy& e = (*it);
+    block = pyr.get_block_at(e.pos_col, e.pos_row);
 
     bool start_falling  = e.pos_row > 0 && pyr.get_block_at(e.pos_col, e.pos_row - 1) == BLOCK_IN;
     bool start_climbing = pyr.get_block_at(e.pos_col, e.pos_row) == LADDER;
@@ -174,7 +184,7 @@ void Scene::draw() {
       int x2 = x1 + w;
       int y2 = y1 + h;
 
-      al_draw_rectangle(x1+0.5,y1+0.5,x2+0.5,y2+0.5,al_map_rgb(255,0,0), 1.0);
+//      al_draw_rectangle(x1+0.5,y1+0.5,x2+0.5,y2+0.5,al_map_rgb(255,0,0), 1.0);
     }
 
   al_draw_bitmap(selector_img, offsetw + w*selector_pos.first, L_HEIGHT - (offseth + h*selector_pos.second), 0);

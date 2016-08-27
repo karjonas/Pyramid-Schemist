@@ -23,6 +23,8 @@ public:
   ALLEGRO_BITMAP *block_img;
   ALLEGRO_BITMAP *block_in_img;
   ALLEGRO_BITMAP *ladder_img;
+  ALLEGRO_BITMAP *snake_img;
+
   std::array<std::array<BlockType, PYR_COLS>, PYR_ROWS> blocks;
   std::array<std::array<double, PYR_COLS>, PYR_ROWS> inverted_block;
 
