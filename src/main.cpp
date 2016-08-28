@@ -107,7 +107,7 @@ void game_loop(void) {
   bool key_repeat_first[ALLEGRO_KEY_MAX] = {0};
 
   constexpr double KEY_REP_TIME = 0.1;
-  constexpr double KEY_REP_TIME_FIRST = 0.2;
+  constexpr double KEY_REP_TIME_FIRST = 0.35;
 
   while (!done) {
     ALLEGRO_EVENT ev;
