@@ -14,56 +14,12 @@
 
 Scene::Scene() {
   selector_img = al_load_bitmap("img/selector.png");
-
-
   enemy_img0 = al_load_bitmap("img/enemy.png");
   enemy_img1 = al_load_bitmap("img/enemy1.png");
   enemy_img2 = al_load_bitmap("img/enemy2.png");
   hero_img = al_load_bitmap("img/hero.png");
 
-{
-  Enemy e;
-  e.pos_row = 1;
-  e.pos_row_exact = 1;
-
-  e.pos_col = 10;
-  e.pos_col_exact = 10.5;
-
-  e.image = enemy_img0;
-  pyramid_enemies[0].push_back(e);
-}
-
-  {
-    Enemy e;
-    e.pos_row = 0;
-    e.pos_row_exact = 0;
-
-    e.pos_col = 0;
-    e.pos_col_exact = 0.5;
-
-    e.image = enemy_img0;
-    e.direction_x = 1;
-    pyramid_enemies[0].push_back(e);
-  }
-
-//{
-//  Enemy e;
-//  e.pos = {6,2};
-//  e.pos_exact = {6,2};
-//  e.image = enemy_img1;
-//  enemies.push_back(e);
-//}
-//{
-//  Enemy e;
-//  e.pos = {3,0};
-//  e.pos_exact = {3,0};
-//  e.image = enemy_img2;
-//  enemies.push_back(e);
-//}
-
-  pyramids[1].blocks = create_block_layout();
-  pyramids[2].blocks = create_block_layout();
-  pyramids[3].blocks = create_block_layout();
+  restart();
 }
 
 void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
@@ -109,6 +65,20 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
 
   move_enemies_across_edges();
 
+  if (dead && !dead_last) {
+    restart_countdown = 2.9;
+  } else if (dead) {
+    restart_countdown -= dt;
+  }
+
+  if (dead && restart_countdown <= 0.0)
+    restart();
+
+  if (show_level_countdown > 0.0)
+    show_level_countdown -= dt;
+
+  draw_level = show_level_countdown >= 0.0;
+  dead_last = dead;
   last_update = now;
 }
 
@@ -123,6 +93,9 @@ void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies)
           break;
       }
     }
+
+    if (it->pos_col == hero_pos_col && it->pos_row == hero_pos_row)
+        dead = true;
 
     Enemy& e = (*it);
     block = pyr.get_block_at(e.pos_col, e.pos_row);
@@ -222,6 +195,116 @@ void Scene::move_enemies_across_edges() {
   }
 }
 
+void Scene::restart() {
+  dead = false;
+
+  for (auto& pe : pyramid_enemies)
+    pe.clear();
+
+  {
+    Enemy e;
+    e.pos_row = 1;
+    e.pos_row_exact = 1;
+
+    e.pos_col = 10;
+    e.pos_col_exact = 10.5;
+
+    e.image = enemy_img0;
+    pyramid_enemies[0].push_back(e);
+  }
+
+    {
+      Enemy e;
+      e.pos_row = 0;
+      e.pos_row_exact = 0;
+
+      e.pos_col = 0;
+      e.pos_col_exact = 0.5;
+
+      e.image = enemy_img1;
+      e.direction_x = 1;
+      pyramid_enemies[0].push_back(e);
+    }
+
+    {
+      Enemy e;
+      e.pos_row = 0;
+      e.pos_row_exact = 0;
+
+      e.pos_col = 0;
+      e.pos_col_exact = 0.5;
+
+      e.image = enemy_img2;
+      e.direction_x = -1;
+      pyramid_enemies[1].push_back(e);
+    }
+
+    {
+      Enemy e;
+      e.pos_row = 0;
+      e.pos_row_exact = 0;
+
+      e.pos_col = 0;
+      e.pos_col_exact = 0.5;
+
+      e.image = enemy_img0;
+      e.direction_x = -1;
+      pyramid_enemies[2].push_back(e);
+    }
+
+    {
+      Enemy e;
+      e.pos_row = 0;
+      e.pos_row_exact = 0;
+
+      e.pos_col = 0;
+      e.pos_col_exact = 0.5;
+
+      e.image = enemy_img1;
+      e.direction_x = -1;
+      e.speed = 7;
+      pyramid_enemies[3].push_back(e);
+    }
+
+  //{
+  //  Enemy e;
+  //  e.pos = {6,2};
+  //  e.pos_exact = {6,2};
+  //  e.image = enemy_img1;
+  //  enemies.push_back(e);
+  //}
+  //{
+  //  Enemy e;
+  //  e.pos = {3,0};
+  //  e.pos_exact = {3,0};
+  //  e.image = enemy_img2;
+  //  enemies.push_back(e);
+  //}
+
+  for(auto& p : pyramids)
+    p = Pyramid();
+
+  pyramids[1].blocks = create_block_layout();
+  pyramids[2].blocks = create_block_layout();
+  pyramids[3].blocks = create_block_layout();
+
+  show_level_countdown = 2.0;
+  draw_level = true;
+}
+
+void Scene::draw_text(const char* str)
+{
+  int tw = al_get_text_width(font, str) + 10;
+  int th = al_get_font_line_height(font) + 4;
+  int x0 = L_WIDTH/2 -tw/2;
+  int y0 = L_HEIGHT/2 -4;
+  int x1 = L_WIDTH/2 + tw/2;
+  int y1 = L_HEIGHT/2 + th;
+  al_draw_filled_rectangle(x0,y0,x1,y1, al_map_rgb(0,0,0));
+  al_draw_rectangle(x0,y0,x1,y1, al_map_rgb(125,125,125), 1);
+
+  al_draw_text(font, al_map_rgb(255,255,255), L_WIDTH/2, L_HEIGHT/2, ALLEGRO_ALIGN_CENTRE, str);
+}
 
 void Scene::draw() {
   constexpr int w = 21;
@@ -236,7 +319,7 @@ void Scene::draw() {
   auto& pyr = pyramids[curr_pyramid];
   pyr.draw();
 
-  al_draw_bitmap(hero_img, offsetw + w*6, L_HEIGHT - (offseth + h*7), 0);
+  al_draw_bitmap(hero_img, offsetw + w*hero_pos_col, L_HEIGHT - (offseth + h*hero_pos_row), 0);
 
 
   for (auto& e : pyramid_enemies[curr_pyramid]) {
@@ -257,6 +340,22 @@ void Scene::draw() {
   al_draw_text(font, al_map_rgb(255,255,255), 0, 0, 0, side_strs[curr_pyramid]);
 
   al_draw_bitmap(selector_img, offsetw + w*selector_pos.first, L_HEIGHT - (offseth + h*selector_pos.second), 0);
+
+
+  if (draw_level)
+  {
+    char str[200];
+    snprintf(str, 200, "Level %d", curr_level);
+    draw_text(str);
+  }
+
+  if (dead)
+  {
+     char str[200];
+     int secs_left = static_cast<int>(restart_countdown);
+     snprintf(str, 200, "You Died, Restarting in %d", secs_left + 1);
+     draw_text(str);
+  }
 
 }
 

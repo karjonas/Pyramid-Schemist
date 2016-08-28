@@ -21,6 +21,9 @@ public:
   void update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies);
 
   void move_enemies_across_edges();
+  void restart();
+
+  void draw_text(const char* str);
 
   std::array<Pyramid, 4> pyramids;
 
@@ -42,4 +45,13 @@ public:
   size_t curr_pyramid = 0;
 
   ALLEGRO_FONT* font;
+  bool dead = false;
+  bool dead_last = false;
+  size_t hero_pos_row = 7;
+  size_t hero_pos_col = 6;
+  size_t curr_level = 0;
+
+  double restart_countdown = 0.0;
+  double show_level_countdown = 0.0;
+  bool draw_level = false;
 };
