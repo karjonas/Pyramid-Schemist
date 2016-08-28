@@ -26,8 +26,12 @@ Scene::Scene() {
   background = al_load_bitmap("img/background.png");
 
   audio_death = al_load_sample("audio/death.wav");
+  audio_land = al_load_sample("audio/land.wav");
+  audio_push = al_load_sample("audio/push.wav");
+  audio_climb = al_load_sample("audio/climb.wav");
+  audio_hero_death = al_load_sample("audio/hero_death.wav");
 
-  restart(0);
+  restart(20);
 }
 
 void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
@@ -62,6 +66,7 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
   if (hole && ((now - last_hole_time) > HOLE_RETRY_TIME)
       && pyr.invert_block_at(selector_pos.first, selector_pos.second, 5.0)) {
      last_hole_time = now;
+     play_push_sound = true;
   }
 
   double dt = std::min(0.05, now - last_update);
@@ -81,6 +86,7 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
 
   if (dead && !dead_last) {
     restart_countdown = 2.9;
+    play_hero_death_sound = true;
   } else if (dead) {
     restart_countdown -= dt;
   }
@@ -97,10 +103,26 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
   if (dead_enemy)
     al_play_sample(audio_death,1,0.0,1.0,ALLEGRO_PLAYMODE_ONCE, nullptr);
 
+  if (play_land_sound)
+    al_play_sample(audio_land,1,0.0,1.0,ALLEGRO_PLAYMODE_ONCE, nullptr);
+
+  if (play_push_sound)
+    al_play_sample(audio_push,1,0.0,1.0,ALLEGRO_PLAYMODE_ONCE, nullptr);
+
+  if (play_climb_sound)
+    al_play_sample(audio_climb,1,0.0,1.0,ALLEGRO_PLAYMODE_ONCE, nullptr);
+
+  if (play_hero_death_sound)
+    al_play_sample(audio_hero_death,1,0.0,1.0,ALLEGRO_PLAYMODE_ONCE, nullptr);
+
   draw_level = show_level_countdown >= 0.0;
   dead_last = dead;
   last_update = now;
   dead_enemy = false;
+  play_land_sound = false;
+  play_push_sound = false;
+  play_climb_sound = false;
+  play_hero_death_sound = false;
 }
 
 void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies) {
@@ -139,6 +161,7 @@ void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies)
 
       if (past_mid_x && start_climbing) {
           e.state = EnemyState::CLIMBING;
+          play_climb_sound = true;
       } else if (start_falling && block != LADDER) {
           e.state = EnemyState::FALLING;
       } else if (e.pos_col != static_cast<int>(e.pos_col_exact)) {
@@ -177,6 +200,8 @@ void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies)
         bool next_fall = (e.pos_row > 0 && pyr.get_block_at(e.pos_col, e.pos_row -1) == BLOCK_IN);
 
         e.state = next_fall ? EnemyState::FALLING : EnemyState::WALKING;
+
+        play_land_sound = play_land_sound || !next_fall;
       }
     }
     it++;

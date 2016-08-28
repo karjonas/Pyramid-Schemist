@@ -48,6 +48,10 @@ public:
   ALLEGRO_BITMAP *background;
 
   ALLEGRO_SAMPLE *audio_death;
+  ALLEGRO_SAMPLE *audio_land;
+  ALLEGRO_SAMPLE *audio_push;
+  ALLEGRO_SAMPLE *audio_climb;
+  ALLEGRO_SAMPLE *audio_hero_death;
 
   double last_hole_time = 0.0;
   size_t curr_pyramid = 0;
@@ -64,4 +68,8 @@ public:
   bool draw_level = false;
 
   bool dead_enemy = false;
+  bool play_land_sound = false;
+  bool play_push_sound = false;
+  bool play_climb_sound = false;
+  bool play_hero_death_sound = false;
 };
