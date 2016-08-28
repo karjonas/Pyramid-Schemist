@@ -15,7 +15,7 @@ class Scene
 public:
   Scene();
 
-  void tick(bool key_pressed[]);
+  void tick(bool key_pressed[], bool key_repeat[]);
   void draw();
 
   void move_selector(int col_dt, int row_dt);

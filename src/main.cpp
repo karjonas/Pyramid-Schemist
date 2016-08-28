@@ -101,29 +101,55 @@ void game_loop(void) {
   bool key_pressed[ALLEGRO_KEY_MAX] = {0};
   bool key_down[ALLEGRO_KEY_MAX] = {0};
 
+  double key_time[ALLEGRO_KEY_MAX] = {0};
+
+  bool key_repeat[ALLEGRO_KEY_MAX] = {0};
+  bool key_repeat_first[ALLEGRO_KEY_MAX] = {0};
+
+  constexpr double KEY_REP_TIME = 0.1;
+  constexpr double KEY_REP_TIME_FIRST = 0.2;
+
   while (!done) {
     ALLEGRO_EVENT ev;
+    double now = al_get_time();
+
     while (al_get_next_event(event_queue, &ev)) {
       if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
         key_pressed[ev.keyboard.keycode] = true;
         key_down[ev.keyboard.keycode] = true;
+        key_time[ev.keyboard.keycode] = now;
+        key_repeat_first[ev.keyboard.keycode] = true;
       } else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
         key_down[ev.keyboard.keycode] = false;
+        key_repeat_first[ev.keyboard.keycode] = false;
+        key_repeat[ev.keyboard.keycode] = false;
       } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-        done = false;
+        done = true;
       }
     }
 
     if (key_down[ALLEGRO_KEY_ESCAPE])
-      done = false;
+      done = true;
 
-    scene.tick(key_pressed);
+    for (int i = 0; i < ALLEGRO_KEY_MAX; i++) {
+      double rep_time = key_repeat_first[i] ? KEY_REP_TIME_FIRST : KEY_REP_TIME;
+      if (key_down[i] && (now - key_time[i] >= rep_time)) {
+        key_time[i] = now;
+        key_repeat[i] = true;
+        key_repeat_first[i] = false;
+      }
+    }
+
+    scene.tick(key_pressed, key_repeat);
     al_clear_to_color(al_map_rgb(0,0,0));
     scene.draw();
     al_flip_display();
 
     for (auto &pressed : key_pressed)
       pressed = false;
+
+    for (auto &rep : key_repeat)
+      rep = false;
   }
 }
 

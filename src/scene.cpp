@@ -34,13 +34,13 @@ Scene::Scene() {
   restart(2);
 }
 
-void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
+void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX], bool key_repeat[ALLEGRO_KEY_MAX]) {
   double now = al_get_time();
 
-  bool left  = key_pressed[ALLEGRO_KEY_LEFT ] || key_pressed[ALLEGRO_KEY_A];
-  bool right = key_pressed[ALLEGRO_KEY_RIGHT] || key_pressed[ALLEGRO_KEY_D];
-  bool up    = key_pressed[ALLEGRO_KEY_UP   ] || key_pressed[ALLEGRO_KEY_W];
-  bool down  = key_pressed[ALLEGRO_KEY_DOWN ] || key_pressed[ALLEGRO_KEY_S];
+  bool left  = key_pressed[ALLEGRO_KEY_LEFT ] || key_repeat[ALLEGRO_KEY_LEFT];
+  bool right = key_pressed[ALLEGRO_KEY_RIGHT] || key_repeat[ALLEGRO_KEY_RIGHT];
+  bool up    = key_pressed[ALLEGRO_KEY_UP   ] || key_repeat[ALLEGRO_KEY_UP];
+  bool down  = key_pressed[ALLEGRO_KEY_DOWN ] || key_repeat[ALLEGRO_KEY_DOWN];
   bool hole  = key_pressed[ALLEGRO_KEY_SPACE];
 
   bool prev_pyr = key_pressed[ALLEGRO_KEY_H];
