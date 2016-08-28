@@ -61,7 +61,7 @@ void init(void) {
 
   al_set_new_display_flags(ALLEGRO_WINDOWED);
   // display = al_create_display(disp_data.width, disp_data.height);
-  display = al_create_display(320, 200);
+  display = al_create_display(640, 400);
   if (!display)
     abort_game("Failed to create display");
 
@@ -76,6 +76,12 @@ void init(void) {
   al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
   font = al_load_ttf_font("src/Atari_Full.ttf", 8, 0);
+
+  ALLEGRO_TRANSFORM trans;
+  al_identity_transform(&trans);
+  al_scale_transform(&trans, 2, 2);
+
+  al_use_transform(&trans);
 
   done = false;
 }
