@@ -19,7 +19,7 @@ Scene::Scene() {
   enemy_img2 = al_load_bitmap("img/enemy2.png");
   hero_img = al_load_bitmap("img/hero.png");
 
-  restart();
+  restart(0);
 }
 
 void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
@@ -63,6 +63,12 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
     update_enemies(dt, pyramids[i], pyramid_enemies[i]);
   }
 
+  bool enemies_dead = true;
+
+  for (int i = 0; i < 4; i++) {
+    enemies_dead = enemies_dead && pyramid_enemies[i].empty();
+  }
+
   move_enemies_across_edges();
 
   if (dead && !dead_last) {
@@ -72,7 +78,10 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
   }
 
   if (dead && restart_countdown <= 0.0)
-    restart();
+    restart(curr_level);
+
+  if (enemies_dead)
+    restart(curr_level + 1);
 
   if (show_level_countdown > 0.0)
     show_level_countdown -= dt;
@@ -195,76 +204,80 @@ void Scene::move_enemies_across_edges() {
   }
 }
 
-void Scene::restart() {
+void Scene::restart(size_t level_idx) {
   dead = false;
+
+  curr_level = level_idx;
 
   for (auto& pe : pyramid_enemies)
     pe.clear();
 
   {
     Enemy e;
-    e.pos_row = 1;
-    e.pos_row_exact = 1;
+    e.pos_row = 0;
+    e.pos_row_exact = 0;
 
-    e.pos_col = 10;
-    e.pos_col_exact = 10.5;
+    e.pos_col = 4;
+    e.pos_col_exact = 4.5;
 
+    e.direction_x = 1;
+    e.speed = 2.8;
     e.image = enemy_img0;
     pyramid_enemies[0].push_back(e);
   }
 
-    {
-      Enemy e;
-      e.pos_row = 0;
-      e.pos_row_exact = 0;
-
-      e.pos_col = 0;
-      e.pos_col_exact = 0.5;
-
-      e.image = enemy_img1;
-      e.direction_x = 1;
-      pyramid_enemies[0].push_back(e);
-    }
-
-    {
-      Enemy e;
-      e.pos_row = 0;
-      e.pos_row_exact = 0;
-
-      e.pos_col = 0;
-      e.pos_col_exact = 0.5;
-
-      e.image = enemy_img2;
-      e.direction_x = -1;
-      pyramid_enemies[1].push_back(e);
-    }
-
-    {
-      Enemy e;
-      e.pos_row = 0;
-      e.pos_row_exact = 0;
-
-      e.pos_col = 0;
-      e.pos_col_exact = 0.5;
-
-      e.image = enemy_img0;
-      e.direction_x = -1;
-      pyramid_enemies[2].push_back(e);
-    }
-
-    {
-      Enemy e;
-      e.pos_row = 0;
-      e.pos_row_exact = 0;
-
-      e.pos_col = 0;
-      e.pos_col_exact = 0.5;
-
-      e.image = enemy_img1;
-      e.direction_x = -1;
-      e.speed = 7;
-      pyramid_enemies[3].push_back(e);
-    }
+  //  {
+  //    Enemy e;
+  //    e.pos_row = 0;
+  //    e.pos_row_exact = 0;
+  //
+  //    e.pos_col = 0;
+  //    e.pos_col_exact = 0.5;
+  //
+  //    e.image = enemy_img1;
+  //    e.direction_x = 1;
+  //    pyramid_enemies[0].push_back(e);
+  //  }
+  //
+  //  {
+  //    Enemy e;
+  //    e.pos_row = 0;
+  //    e.pos_row_exact = 0;
+  //
+  //    e.pos_col = 0;
+  //    e.pos_col_exact = 0.5;
+  //
+  //    e.image = enemy_img2;
+  //    e.direction_x = -1;
+  //    pyramid_enemies[1].push_back(e);
+  //  }
+  //
+  //  {
+  //    Enemy e;
+  //    e.pos_row = 0;
+  //    e.pos_row_exact = 0;
+  //
+  //    e.pos_col = 0;
+  //    e.pos_col_exact = 0.5;
+  //
+  //    e.image = enemy_img0;
+  //    e.direction_x = -1;
+  //    pyramid_enemies[2].push_back(e);
+  //  }
+  //
+  //  {
+  //    Enemy e;
+  //    e.pos_row = 0;
+  //    e.pos_row_exact = 0;
+  //
+  //    e.pos_col = 0;
+  //    e.pos_col_exact = 0.5;
+  //
+  //    e.image = enemy_img1;
+  //    e.direction_x = -1;
+  //    e.speed = 7;
+  //    pyramid_enemies[3].push_back(e);
+  //  }
 
   //{
   //  Enemy e;

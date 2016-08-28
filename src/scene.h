@@ -21,7 +21,7 @@ public:
   void update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies);
 
   void move_enemies_across_edges();
-  void restart();
+  void restart(size_t level_idx);
 
   void draw_text(const char* str);
 
