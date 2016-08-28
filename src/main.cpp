@@ -44,7 +44,7 @@ void init(void) {
     abort_game("failed to initialize audio codecs!\n");
   }
 
-  if (!al_reserve_samples(1)) {
+  if (!al_reserve_samples(10)) {
     abort_game("failed to reserve samples!\n");
   }
 

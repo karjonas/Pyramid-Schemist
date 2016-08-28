@@ -8,6 +8,7 @@
 
 struct ALLEGRO_KEYBOARD_STATE;
 struct ALLEGRO_FONT;
+struct ALLEGRO_SAMPLE;
 
 class Scene
 {
@@ -44,6 +45,8 @@ public:
   ALLEGRO_BITMAP *hero_side_img;
   ALLEGRO_BITMAP *hero_side1_img;
 
+  ALLEGRO_SAMPLE *audio_death;
+
   double last_hole_time = 0.0;
   size_t curr_pyramid = 0;
 
@@ -57,4 +60,6 @@ public:
   double restart_countdown = 0.0;
   double show_level_countdown = 0.0;
   bool draw_level = false;
+
+  bool dead_enemy = false;
 };

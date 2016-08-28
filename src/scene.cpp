@@ -7,6 +7,7 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_audio.h>
 
 #include <cmath>
 
@@ -22,6 +23,8 @@ Scene::Scene() {
   hero_back_img = al_load_bitmap("img/hero_back.png");
   hero_side_img = al_load_bitmap("img/hero_side.png");
   hero_side1_img = al_load_bitmap("img/hero_side1.png");
+
+  audio_death = al_load_sample("audio/death.wav");
 
   restart(0);
 }
@@ -90,9 +93,13 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
   if (show_level_countdown > 0.0)
     show_level_countdown -= dt;
 
+  if (dead_enemy)
+    al_play_sample(audio_death,1,0.0,1.0,ALLEGRO_PLAYMODE_ONCE, nullptr);
+
   draw_level = show_level_countdown >= 0.0;
   dead_last = dead;
   last_update = now;
+  dead_enemy = false;
 }
 
 void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies) {
@@ -101,6 +108,7 @@ void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies)
     BlockType block = pyr.get_block_at(it->pos_col, it->pos_row);
 
     if (block == SNAKE || block == BLOCK_IN_SNAKE) {
+      dead_enemy = true;
       it = enemies.erase(it);
       continue;
     }
