@@ -6,6 +6,7 @@ set(SOURCES_CPP
   src/main.cpp
   src/pyramid.cpp
   src/scene.cpp
+  src/level.cpp
 )
 
 add_executable(ld36 ${SOURCES_CPP})

@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "pyramid.h"
 #include "layout.h"
+#include "level.h"
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
@@ -93,14 +94,12 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
 
 void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies) {
 
-  for (auto it = enemies.begin(); it != enemies.end(); it++) {
+  for (auto it = enemies.begin(); it != enemies.end();) {
     BlockType block = pyr.get_block_at(it->pos_col, it->pos_row);
 
     if (block == SNAKE) {
       it = enemies.erase(it);
-      if (it == enemies.end()) {
-          break;
-      }
+      continue;
     }
 
     if (it->pos_col == hero_pos_col && it->pos_row == hero_pos_row)
@@ -166,6 +165,7 @@ void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies)
         e.state = next_fall ? EnemyState::FALLING : EnemyState::WALKING;
       }
     }
+    it++;
   }
 
 }
@@ -177,7 +177,7 @@ void Scene::move_enemies_across_edges() {
 
     auto& enemies = pyramid_enemies[i];
 
-    for (auto it = enemies.begin(); it != enemies.end(); it++) {
+    for (auto it = enemies.begin(); it != enemies.end();) {
       Enemy& e = *it;
       if (e.move_next_side) {
         e.move_next_side = false;
@@ -197,9 +197,9 @@ void Scene::move_enemies_across_edges() {
         }
 
         it = enemies.erase(it);
-        if (it == enemies.end())
-          break;
+        continue;
       }
+      it++;
     }
   }
 }
@@ -209,100 +209,26 @@ void Scene::restart(size_t level_idx) {
 
   curr_level = level_idx;
 
-  for (auto& pe : pyramid_enemies)
-    pe.clear();
+  Level level = generate_level(curr_level);
 
-  {
-    Enemy e;
-    e.pos_row = 0;
-    e.pos_row_exact = 0;
+  pyramids = level.pyramids;
+  pyramid_enemies = level.pyramid_enemies;
 
-    e.pos_col = 4;
-    e.pos_col_exact = 4.5;
-
-    e.direction_x = 1;
-    e.speed = 2.8;
-    e.image = enemy_img0;
-    pyramid_enemies[0].push_back(e);
+  int i = 0;
+  for (auto& enemies : pyramid_enemies) {
+    for (auto& e : enemies) {
+      switch (i) {
+        case 0: e.image = enemy_img0; break;
+        case 1: e.image = enemy_img1; break;
+        default: e.image = enemy_img2; break;
+      }
+      i++;
+    }
   }
-
-  //  {
-  //    Enemy e;
-  //    e.pos_row = 0;
-  //    e.pos_row_exact = 0;
-  //
-  //    e.pos_col = 0;
-  //    e.pos_col_exact = 0.5;
-  //
-  //    e.image = enemy_img1;
-  //    e.direction_x = 1;
-  //    pyramid_enemies[0].push_back(e);
-  //  }
-  //
-  //  {
-  //    Enemy e;
-  //    e.pos_row = 0;
-  //    e.pos_row_exact = 0;
-  //
-  //    e.pos_col = 0;
-  //    e.pos_col_exact = 0.5;
-  //
-  //    e.image = enemy_img2;
-  //    e.direction_x = -1;
-  //    pyramid_enemies[1].push_back(e);
-  //  }
-  //
-  //  {
-  //    Enemy e;
-  //    e.pos_row = 0;
-  //    e.pos_row_exact = 0;
-  //
-  //    e.pos_col = 0;
-  //    e.pos_col_exact = 0.5;
-  //
-  //    e.image = enemy_img0;
-  //    e.direction_x = -1;
-  //    pyramid_enemies[2].push_back(e);
-  //  }
-  //
-  //  {
-  //    Enemy e;
-  //    e.pos_row = 0;
-  //    e.pos_row_exact = 0;
-  //
-  //    e.pos_col = 0;
-  //    e.pos_col_exact = 0.5;
-  //
-  //    e.image = enemy_img1;
-  //    e.direction_x = -1;
-  //    e.speed = 7;
-  //    pyramid_enemies[3].push_back(e);
-  //  }
-
-  //{
-  //  Enemy e;
-  //  e.pos = {6,2};
-  //  e.pos_exact = {6,2};
-  //  e.image = enemy_img1;
-  //  enemies.push_back(e);
-  //}
-  //{
-  //  Enemy e;
-  //  e.pos = {3,0};
-  //  e.pos_exact = {3,0};
-  //  e.image = enemy_img2;
-  //  enemies.push_back(e);
-  //}
-
-  for(auto& p : pyramids)
-    p = Pyramid();
-
-  pyramids[1].blocks = create_block_layout();
-  pyramids[2].blocks = create_block_layout();
-  pyramids[3].blocks = create_block_layout();
 
   show_level_countdown = 2.0;
   draw_level = true;
+  curr_pyramid = 0;
 }
 
 void Scene::draw_text(const char* str)
@@ -358,7 +284,7 @@ void Scene::draw() {
   if (draw_level)
   {
     char str[200];
-    snprintf(str, 200, "Level %d", curr_level);
+    snprintf(str, 200, "Level %d", curr_level + 1);
     draw_text(str);
   }
 
