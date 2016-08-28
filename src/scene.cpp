@@ -19,6 +19,9 @@ Scene::Scene() {
   enemy_img1 = al_load_bitmap("img/enemy1.png");
   enemy_img2 = al_load_bitmap("img/enemy2.png");
   hero_img = al_load_bitmap("img/hero.png");
+  hero_back_img = al_load_bitmap("img/hero_back.png");
+  hero_side_img = al_load_bitmap("img/hero_side.png");
+  hero_side1_img = al_load_bitmap("img/hero_side1.png");
 
   restart(0);
 }
@@ -260,7 +263,17 @@ void Scene::draw() {
   auto& pyr = pyramids[curr_pyramid];
   pyr.draw();
 
-  al_draw_bitmap(hero_img, offsetw + w*hero_pos_col, L_HEIGHT - (offseth + h*hero_pos_row), 0);
+  int h_x = offsetw + w*hero_pos_col;
+  int h_y = L_HEIGHT - (offseth + h*hero_pos_row);
+  if (curr_pyramid == 0)
+    al_draw_bitmap(hero_img, h_x, h_y, 0);
+  else if (curr_pyramid == 1)
+    al_draw_bitmap(hero_side1_img, h_x, h_y, 0);
+  else if (curr_pyramid == 3)
+    al_draw_bitmap(hero_side_img, h_x, h_y, 0);
+  else
+    al_draw_bitmap(hero_back_img, h_x, h_y, 0);
+
 
 
   for (auto& e : pyramid_enemies[curr_pyramid]) {
@@ -272,13 +285,8 @@ void Scene::draw() {
 
 //      al_draw_rectangle(x1+0.5,y1+0.5,x2+0.5,y2+0.5,al_map_rgb(255,0,0), 1.0);
 
-
-
     }
 
-  const char* side_strs[4] = {"South", "East", "North", "West"};
-
-  al_draw_text(font, al_map_rgb(255,255,255), 0, 0, 0, side_strs[curr_pyramid]);
 
   al_draw_bitmap(selector_img, offsetw + w*selector_pos.first, L_HEIGHT - (offseth + h*selector_pos.second), 0);
 

@@ -40,6 +40,9 @@ public:
   ALLEGRO_BITMAP *enemy_img2;
 
   ALLEGRO_BITMAP *hero_img;
+  ALLEGRO_BITMAP *hero_back_img;
+  ALLEGRO_BITMAP *hero_side_img;
+  ALLEGRO_BITMAP *hero_side1_img;
 
   double last_hole_time = 0.0;
   size_t curr_pyramid = 0;
