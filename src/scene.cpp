@@ -37,7 +37,7 @@ Scene::Scene() {
   audio_climb = al_load_sample("audio/climb.wav");
   audio_hero_death = al_load_sample("audio/hero_death.wav");
 
-  restart(2);
+  restart(0);
 }
 
 void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX], bool key_repeat[ALLEGRO_KEY_MAX]) {

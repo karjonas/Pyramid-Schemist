@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(ld36)
+project(Pyramid_Schemist)
 
 set(SOURCES_CPP
   src/main.cpp
@@ -9,7 +9,7 @@ set(SOURCES_CPP
   src/level.cpp
 )
 
-add_executable(ld36 ${SOURCES_CPP})
+add_executable(Pyramid_Schemist ${SOURCES_CPP})
 
 set(LIBS
   allegro
@@ -21,6 +21,6 @@ set(LIBS
   allegro_image
 )
 
-target_link_libraries(ld36 ${LIBS})
+target_link_libraries(Pyramid_Schemist ${LIBS})
 
-install(TARGETS ld36 DESTINATION bin)
+install(TARGETS Pyramid_Schemist DESTINATION bin)
