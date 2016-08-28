@@ -31,7 +31,6 @@ public:
   std::pair<int, int> selector_pos = {4,3};
   ALLEGRO_BITMAP *selector_img;
 
-  double last_press_time = 0;
   double last_update = 0;
 
   std::array<std::vector<Enemy>, 4> pyramid_enemies;

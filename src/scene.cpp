@@ -31,7 +31,7 @@ Scene::Scene() {
   audio_climb = al_load_sample("audio/climb.wav");
   audio_hero_death = al_load_sample("audio/hero_death.wav");
 
-  restart(20);
+  restart(2);
 }
 
 void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
@@ -46,7 +46,7 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
   bool prev_pyr = key_pressed[ALLEGRO_KEY_H];
   bool next_pyr = key_pressed[ALLEGRO_KEY_J];
 
-  if ((now - last_press_time >= 0.1) && (left || right || up || down || next_pyr || prev_pyr)) {
+  if ((left || right || up || down || next_pyr || prev_pyr)) {
     move_selector(left ? -1 : (right ? 1 : 0), up ? 1 : (down ? -1 : 0) );
     if (next_pyr)
       curr_pyramid++;
@@ -57,8 +57,6 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
       curr_pyramid = 3;
 
     curr_pyramid = curr_pyramid % 4;
-
-    last_press_time = now;
   }
 
   auto& pyr = pyramids[curr_pyramid];
