@@ -11,16 +11,6 @@ Pyramid::Pyramid() {
   ladder_img = al_load_bitmap("img/ladder.png");
   snake_img = al_load_bitmap("img/snake_block.png");
 
-  blocks = {{
-              {{BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, SNAKE, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK}},
-              {{EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY}},
-              {{EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, LADDER, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, LADDER, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}}
-            }};
 
   for (auto& row : inverted_block) {
       row.fill(0.0);
@@ -90,19 +80,4 @@ void Pyramid::update(double dt) {
         }
     }
   }
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-pyr_arr_rc<BlockType> create_block_layout() {
-  return  {{
-              {{BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK}},
-              {{EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY}},
-              {{EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
-              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}}
-            }};
 }

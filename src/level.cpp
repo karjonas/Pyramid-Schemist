@@ -1,5 +1,45 @@
 #include "level.h"
 
+
+pyr_arr_rc<BlockType> create_block_layout() {
+  return  {{
+              {{BLOCK, BLOCK, LADDER, BLOCK ,BLOCK,BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK}},
+              {{EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY}},
+              {{EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}}
+            }};
+}
+
+pyr_arr_rc<BlockType> create_block_back() {
+  return  {{
+              {{BLOCK, BLOCK, LADDER, BLOCK, BLOCK,SNAKE,BLOCK, SNAKE, BLOCK, BLOCK, LADDER, BLOCK, BLOCK}},
+              {{EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY}},
+              {{EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, LADDER, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
+              {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}}
+            }};
+}
+
+pyr_arr_rc<BlockType> create_block_front() {
+  return  {{
+            {{BLOCK, BLOCK, LADDER, BLOCK, SNAKE, BLOCK, BLOCK, BLOCK, SNAKE, BLOCK, LADDER, BLOCK, BLOCK}},
+            {{EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, LADDER, BLOCK, LADDER, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY}},
+            {{EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY}},
+            {{EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, LADDER, BLOCK, LADDER, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY}},
+            {{EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY}},
+            {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, LADDER, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
+            {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, LADDER, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}},
+            {{EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}}
+          }};
+}
+
 Level generate_level(size_t level_idx) {
   Level l;
 
@@ -17,8 +57,9 @@ Level generate_level(size_t level_idx) {
     dir_flip = !dir_flip;
   }
 
+  l.pyramids[0].blocks = create_block_front();
   l.pyramids[1].blocks = create_block_layout();
-  l.pyramids[2].blocks = create_block_layout();
+  l.pyramids[2].blocks = create_block_back();
   l.pyramids[3].blocks = create_block_layout();
 
   return l;

@@ -31,5 +31,3 @@ public:
   pyr_arr_rc<BlockType> blocks;
   pyr_arr_rc<double> inverted_block;
 };
-
-pyr_arr_rc<BlockType> create_block_layout();
