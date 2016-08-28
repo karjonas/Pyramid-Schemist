@@ -40,6 +40,10 @@ public:
   ALLEGRO_BITMAP *enemy_img1;
   ALLEGRO_BITMAP *enemy_img2;
 
+  ALLEGRO_BITMAP *enemy_img01;
+  ALLEGRO_BITMAP *enemy_img11;
+  ALLEGRO_BITMAP *enemy_img21;
+
   ALLEGRO_BITMAP *hero_img;
   ALLEGRO_BITMAP *hero_back_img;
   ALLEGRO_BITMAP *hero_side_img;
@@ -74,4 +78,7 @@ public:
   bool play_hero_death_sound = false;
 
   bool selector_active = true;
+  int enemy_sprite_idx = 0;
+
+  double elapsed_time = 0;
 };

@@ -17,9 +17,14 @@
 Scene::Scene() {
   selector_img = al_load_bitmap("img/selector.png");
   selector_inv_img = al_load_bitmap("img/selector_inactive.png");
-  enemy_img0 = al_load_bitmap("img/enemy.png");
+
+  enemy_img0 = al_load_bitmap("img/enemy0.png");
+  enemy_img01 = al_load_bitmap("img/enemy01.png");
   enemy_img1 = al_load_bitmap("img/enemy1.png");
+  enemy_img11 = al_load_bitmap("img/enemy11.png");
   enemy_img2 = al_load_bitmap("img/enemy2.png");
+  enemy_img21 = al_load_bitmap("img/enemy21.png");
+
   hero_img = al_load_bitmap("img/hero.png");
   hero_back_img = al_load_bitmap("img/hero_back.png");
   hero_side_img = al_load_bitmap("img/hero_side.png");
@@ -84,6 +89,8 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX], bool key_repeat[ALLEGRO_KEY_
   }
 
   move_enemies_across_edges();
+
+  enemy_sprite_idx = static_cast<int>(now/0.15) % 2;
 
   if (dead && !dead_last) {
     restart_countdown = 2.9;
@@ -258,9 +265,9 @@ void Scene::restart(size_t level_idx) {
   for (auto& enemies : pyramid_enemies) {
     for (auto& e : enemies) {
       switch (i) {
-        case 0: e.image = enemy_img0; break;
-        case 1: e.image = enemy_img1; break;
-        default: e.image = enemy_img2; break;
+        case 0:  e.image = enemy_img0; e.image1 = enemy_img01; break;
+        case 1:  e.image = enemy_img1; e.image1 = enemy_img11; break;
+        default: e.image = enemy_img2; e.image1 = enemy_img21; break;
       }
       i++;
     }
@@ -314,7 +321,10 @@ void Scene::draw() {
 
 
   for (auto& e : pyramid_enemies[curr_pyramid]) {
-      al_draw_bitmap(e.image, offsetw + w*e.pos_col_exact -w/2, L_HEIGHT - (offseth + h*e.pos_row_exact), 0);
+
+      auto image = enemy_sprite_idx == 0 ? e.image : e.image1;
+
+      al_draw_bitmap(image, offsetw + w*e.pos_col_exact -w/2, L_HEIGHT - (offseth + h*e.pos_row_exact), 0);
       int x1 = offsetw + e.pos_col*w;
       int y1 = L_HEIGHT - (offseth + h*e.pos_row);
       int x2 = x1 + w;

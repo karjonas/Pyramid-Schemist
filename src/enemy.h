@@ -14,6 +14,7 @@ struct Enemy {
   double pos_col_exact = 0.5;
 
   ALLEGRO_BITMAP* image = nullptr;
+  ALLEGRO_BITMAP* image1 = nullptr;
 
   int direction_x = -1; // -1=Left, 1=Right
   int direction_y =  0; // -1=down, 1=up, 0=still
