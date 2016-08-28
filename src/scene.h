@@ -45,6 +45,8 @@ public:
   ALLEGRO_BITMAP *hero_side_img;
   ALLEGRO_BITMAP *hero_side1_img;
 
+  ALLEGRO_BITMAP *background;
+
   ALLEGRO_SAMPLE *audio_death;
 
   double last_hole_time = 0.0;

@@ -23,6 +23,7 @@ Scene::Scene() {
   hero_back_img = al_load_bitmap("img/hero_back.png");
   hero_side_img = al_load_bitmap("img/hero_side.png");
   hero_side1_img = al_load_bitmap("img/hero_side1.png");
+  background = al_load_bitmap("img/background.png");
 
   audio_death = al_load_sample("audio/death.wav");
 
@@ -267,6 +268,8 @@ void Scene::draw() {
 
   constexpr int offsetw = (L_WIDTH - totw) / 2;
   constexpr int offseth = (L_HEIGHT - toth) / 2;
+
+  al_draw_bitmap(background,0,0,0);
 
   auto& pyr = pyramids[curr_pyramid];
   pyr.draw();
