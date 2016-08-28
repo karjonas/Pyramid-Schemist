@@ -30,6 +30,7 @@ public:
 
   std::pair<int, int> selector_pos = {4,3};
   ALLEGRO_BITMAP *selector_img;
+  ALLEGRO_BITMAP *selector_inv_img;
 
   double last_update = 0;
 
@@ -71,4 +72,6 @@ public:
   bool play_push_sound = false;
   bool play_climb_sound = false;
   bool play_hero_death_sound = false;
+
+  bool selector_active = true;
 };

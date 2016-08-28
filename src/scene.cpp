@@ -16,6 +16,7 @@
 
 Scene::Scene() {
   selector_img = al_load_bitmap("img/selector.png");
+  selector_inv_img = al_load_bitmap("img/selector_inactive.png");
   enemy_img0 = al_load_bitmap("img/enemy.png");
   enemy_img1 = al_load_bitmap("img/enemy1.png");
   enemy_img2 = al_load_bitmap("img/enemy2.png");
@@ -61,7 +62,9 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX], bool key_repeat[ALLEGRO_KEY_
 
   auto& pyr = pyramids[curr_pyramid];
 
-  if (hole && ((now - last_hole_time) > HOLE_RETRY_TIME)
+  selector_active = (now - last_hole_time) > HOLE_RETRY_TIME;
+
+  if (hole && selector_active
       && pyr.invert_block_at(selector_pos.first, selector_pos.second, 5.0)) {
      last_hole_time = now;
      play_push_sound = true;
@@ -322,8 +325,8 @@ void Scene::draw() {
     }
 
 
-  al_draw_bitmap(selector_img, offsetw + w*selector_pos.first, L_HEIGHT - (offseth + h*selector_pos.second), 0);
-
+  auto sel_img = selector_active ? selector_img : selector_inv_img;
+  al_draw_bitmap(sel_img, offsetw + w*selector_pos.first - 2, L_HEIGHT - (offseth + h*selector_pos.second) - 2, 0);
 
   if (draw_level)
   {
