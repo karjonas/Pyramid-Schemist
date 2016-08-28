@@ -21,6 +21,7 @@ struct Enemy {
   double speed = 2.5; // blocks per second
   double fall_speed = 4;
 
+  bool move_next_side = false;
 
   EnemyState state = EnemyState::WALKING;
 };

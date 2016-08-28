@@ -20,6 +20,8 @@ public:
   void move_selector(int col_dt, int row_dt);
   void update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies);
 
+  void move_enemies_across_edges();
+
   std::array<Pyramid, 4> pyramids;
 
   std::pair<int, int> selector_pos = {4,3};

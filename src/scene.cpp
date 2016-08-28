@@ -75,8 +75,8 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
   bool down  = key_pressed[ALLEGRO_KEY_DOWN ] || key_pressed[ALLEGRO_KEY_S];
   bool hole  = key_pressed[ALLEGRO_KEY_SPACE];
 
-  bool next_pyr = key_pressed[ALLEGRO_KEY_H];
-  bool prev_pyr = key_pressed[ALLEGRO_KEY_J];
+  bool prev_pyr = key_pressed[ALLEGRO_KEY_H];
+  bool next_pyr = key_pressed[ALLEGRO_KEY_J];
 
   if ((now - last_press_time >= 0.1) && (left || right || up || down || next_pyr || prev_pyr)) {
     move_selector(left ? -1 : (right ? 1 : 0), up ? 1 : (down ? -1 : 0) );
@@ -106,6 +106,8 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
     pyramids[i].update(dt);
     update_enemies(dt, pyramids[i], pyramid_enemies[i]);
   }
+
+  move_enemies_across_edges();
 
   last_update = now;
 }
@@ -147,10 +149,14 @@ void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies)
       } else if (e.pos_col != static_cast<int>(e.pos_col_exact)) {
         e.pos_col = e.pos_col_exact;
         if (e.pos_col < 0 || e.pos_col >= PYR_COLS || (pyr.get_block_at(e.pos_col, e.pos_row) == EMPTY)) {
-            e.pos_col = std::min(PYR_COLS - 1, e.pos_col);
-            e.pos_col = std::max(0, e.pos_col);
 
-            e.direction_x = -e.direction_x;
+            // Switch to other pyramid side
+            e.move_next_side = true;
+
+            //e.pos_col = std::min(PYR_COLS - 1, e.pos_col);
+            //e.pos_col = std::max(0, e.pos_col);
+            //
+            //e.direction_x = -e.direction_x;
         }
       }
     } else if (e.state == EnemyState::CLIMBING) {
@@ -181,6 +187,41 @@ void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies)
   }
 
 }
+
+void Scene::move_enemies_across_edges() {
+  for (int i = 0; i < 4; i++) {
+    int prev_i = i == 0 ? 3 : i - 1;
+    int next_i = (i + 1) % 4;
+
+    auto& enemies = pyramid_enemies[i];
+
+    for (auto it = enemies.begin(); it != enemies.end(); it++) {
+      Enemy& e = *it;
+      if (e.move_next_side) {
+        e.move_next_side = false;
+        if (e.pos_col > PYR_COLS/2) {
+          e.pos_col = (PYR_COLS - e.pos_col);
+          e.pos_col_exact = e.pos_col;
+        } else {
+          e.pos_col = (PYR_COLS -2) - e.pos_col;
+          e.pos_col_exact = e.pos_col + 0.5;
+        }
+        if (e.direction_x == 1) {
+          pyramid_enemies[next_i].push_back(e);
+        } else if (e.direction_x == -1) {
+          pyramid_enemies[prev_i].push_back(e);
+        } else {
+          assert(false);
+        }
+
+        it = enemies.erase(it);
+        if (it == enemies.end())
+          break;
+      }
+    }
+  }
+}
+
 
 void Scene::draw() {
   constexpr int w = 21;
