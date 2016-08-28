@@ -97,7 +97,7 @@ void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies)
   for (auto it = enemies.begin(); it != enemies.end();) {
     BlockType block = pyr.get_block_at(it->pos_col, it->pos_row);
 
-    if (block == SNAKE) {
+    if (block == SNAKE || block == BLOCK_IN_SNAKE) {
       it = enemies.erase(it);
       continue;
     }
@@ -108,7 +108,9 @@ void Scene::update_enemies(double dt, Pyramid& pyr, std::vector<Enemy>& enemies)
     Enemy& e = (*it);
     block = pyr.get_block_at(e.pos_col, e.pos_row);
 
-    bool start_falling  = e.pos_row > 0 && pyr.get_block_at(e.pos_col, e.pos_row - 1) == BLOCK_IN;
+    bool start_falling  = e.pos_row > 0 &&
+        ( pyr.get_block_at(e.pos_col, e.pos_row - 1) == BLOCK_IN
+         || pyr.get_block_at(e.pos_col, e.pos_row - 1) == BLOCK_IN_SNAKE);
     bool start_climbing = pyr.get_block_at(e.pos_col, e.pos_row) == LADDER;
 
     double mid_p_col = static_cast<double>(e.pos_col) + 0.5;

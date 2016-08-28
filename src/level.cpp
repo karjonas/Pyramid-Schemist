@@ -52,6 +52,18 @@ Level generate_level(size_t level_idx) {
     e.pos_col = 0;
     e.pos_col_exact = 0.5;
 
+    if ((i % 2) == 0) {
+      e.pos_row = 0;
+      e.pos_row_exact = 0;
+
+      e.pos_col = 10;
+      e.pos_col_exact = 10.5;
+    }
+
+    e.speed += level_idx*0.15;
+
+    e.speed = std::min(e.speed, 5.0);
+
     e.direction_x = dir_flip ? 1 : -1;
     l.pyramid_enemies[i % 4].push_back(e);
     dir_flip = !dir_flip;
