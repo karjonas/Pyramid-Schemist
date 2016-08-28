@@ -5,6 +5,7 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
 
 #include <cmath>
 
@@ -60,6 +61,9 @@ Scene::Scene() {
 //  enemies.push_back(e);
 //}
 
+  pyramids[1].blocks = create_block_layout();
+  pyramids[2].blocks = create_block_layout();
+  pyramids[3].blocks = create_block_layout();
 }
 
 void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX]) {
@@ -202,7 +206,14 @@ void Scene::draw() {
       int y2 = y1 + h;
 
 //      al_draw_rectangle(x1+0.5,y1+0.5,x2+0.5,y2+0.5,al_map_rgb(255,0,0), 1.0);
+
+
+
     }
+
+  const char* side_strs[4] = {"South", "East", "North", "West"};
+
+  al_draw_text(font, al_map_rgb(255,255,255), 0, 0, 0, side_strs[curr_pyramid]);
 
   al_draw_bitmap(selector_img, offsetw + w*selector_pos.first, L_HEIGHT - (offseth + h*selector_pos.second), 0);
 

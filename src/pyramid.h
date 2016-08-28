@@ -9,6 +9,9 @@
 
 struct ALLEGRO_BITMAP;
 
+template<typename T>
+using pyr_arr_rc = std::array<std::array<T, PYR_COLS>, PYR_ROWS>;
+
 class Pyramid {
 public:
   Pyramid();
@@ -25,7 +28,8 @@ public:
   ALLEGRO_BITMAP *ladder_img;
   ALLEGRO_BITMAP *snake_img;
 
-  std::array<std::array<BlockType, PYR_COLS>, PYR_ROWS> blocks;
-  std::array<std::array<double, PYR_COLS>, PYR_ROWS> inverted_block;
-
+  pyr_arr_rc<BlockType> blocks;
+  pyr_arr_rc<double> inverted_block;
 };
+
+pyr_arr_rc<BlockType> create_block_layout();

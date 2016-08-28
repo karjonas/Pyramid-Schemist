@@ -75,7 +75,7 @@ void init(void) {
 
   al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
-  font = al_load_ttf_font("src/Atari_Full.ttf", 16, 0);
+  font = al_load_ttf_font("src/Atari_Full.ttf", 8, 0);
 
   done = false;
 }
@@ -95,6 +95,7 @@ void shutdown(void) {
 
 void game_loop(void) {
   Scene scene;
+  scene.font = font;
   ALLEGRO_KEYBOARD_STATE kbd_state;
 
   bool key_pressed[ALLEGRO_KEY_MAX] = {0};

@@ -7,6 +7,7 @@
 #include <vector>
 
 struct ALLEGRO_KEYBOARD_STATE;
+struct ALLEGRO_FONT;
 
 class Scene
 {
@@ -37,4 +38,6 @@ public:
 
   double last_hole_time = 0.0;
   size_t curr_pyramid = 0;
+
+  ALLEGRO_FONT* font;
 };
