@@ -75,7 +75,7 @@ void init(void) {
 
   al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
-  font = al_load_ttf_font("src/Atari_Full.ttf", 8, 0);
+  font = al_load_ttf_font("fonts/Atari_Full.ttf", 8, 0);
 
   ALLEGRO_TRANSFORM trans;
   al_identity_transform(&trans);
