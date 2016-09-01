@@ -52,6 +52,8 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX], bool key_repeat[ALLEGRO_KEY_
   bool prev_pyr = key_pressed[ALLEGRO_KEY_H];
   bool next_pyr = key_pressed[ALLEGRO_KEY_J];
 
+  bool restart_level = key_pressed[ALLEGRO_KEY_R];
+
   if ((left || right || up || down || next_pyr || prev_pyr)) {
     move_selector(left ? -1 : (right ? 1 : 0), up ? 1 : (down ? -1 : 0) );
     if (next_pyr)
@@ -99,7 +101,7 @@ void Scene::tick(bool key_pressed[ALLEGRO_KEY_MAX], bool key_repeat[ALLEGRO_KEY_
     restart_countdown -= dt;
   }
 
-  if (dead && restart_countdown <= 0.0)
+  if (restart_level || (dead && restart_countdown <= 0.0))
     restart(curr_level);
 
   if (enemies_dead)
@@ -264,10 +266,10 @@ void Scene::restart(size_t level_idx) {
   int i = 0;
   for (auto& enemies : pyramid_enemies) {
     for (auto& e : enemies) {
-      switch (i) {
-        case 0:  e.image = enemy_img0; e.image1 = enemy_img01; break;
-        case 1:  e.image = enemy_img1; e.image1 = enemy_img11; break;
-        default: e.image = enemy_img2; e.image1 = enemy_img21; break;
+      switch (i % 3) {
+        case 0: e.image = enemy_img0; e.image1 = enemy_img01; break;
+        case 1: e.image = enemy_img1; e.image1 = enemy_img11; break;
+        case 2: e.image = enemy_img2; e.image1 = enemy_img21; break;
       }
       i++;
     }
@@ -276,6 +278,7 @@ void Scene::restart(size_t level_idx) {
   show_level_countdown = 2.0;
   draw_level = true;
   curr_pyramid = 0;
+  last_hole_time = 0;
 }
 
 void Scene::draw_text(const char* str)
