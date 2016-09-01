@@ -49,23 +49,20 @@ Level generate_level(size_t level_idx) {
     e.pos_row = 0;
     e.pos_row_exact = 0;
 
-    e.pos_col = 0;
-    e.pos_col_exact = 0.5;
+    e.pos_col = (i % PYR_COLS);
+    e.pos_col_exact = e.pos_col + 0.5;
 
-    if ((i % 2) == 0) {
-      e.pos_row = 0;
-      e.pos_row_exact = 0;
-
-      e.pos_col = 10;
-      e.pos_col_exact = 10.5;
-    }
-
-    e.speed += level_idx*0.15;
+    //e.speed += level_idx*0.15;
 
     e.speed = std::min(e.speed, 5.0);
 
     e.direction_x = dir_flip ? 1 : -1;
-    l.pyramid_enemies[i % 4].push_back(e);
+    e.pos_col_exact = e.pos_col + e.direction_x*0.5;
+
+    e.pos_row = (i % 3);
+    e.pos_row_exact = e.pos_row;
+
+    l.pyramid_enemies[0].push_back(e);
     dir_flip = !dir_flip;
   }
 
