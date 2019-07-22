@@ -1,16 +1,22 @@
 #include "pyramid.h"
 
 #include "layout.h"
+#include "paths.h"
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 
 Pyramid::Pyramid()
 {
-    block_img = al_load_bitmap("img/block.png");
-    block_in_img = al_load_bitmap("img/block_in.png");
-    ladder_img = al_load_bitmap("img/ladder.png");
-    snake_img = al_load_bitmap("img/snake_block.png");
+    const auto block_img_path = get_full_data_path("img/block.png");
+    const auto block_in_img_path = get_full_data_path("img/block_in.png");
+    const auto ladder_img_path = get_full_data_path("img/ladder.png");
+    const auto snake_img_path = get_full_data_path("img/snake_block.png");
+
+    block_img = al_load_bitmap(block_img_path.c_str());
+    block_in_img = al_load_bitmap(block_in_img_path.c_str());
+    ladder_img = al_load_bitmap(ladder_img_path.c_str());
+    snake_img = al_load_bitmap(snake_img_path.c_str());
 
     for (auto& row : inverted_block)
     {

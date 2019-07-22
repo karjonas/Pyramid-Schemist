@@ -2,6 +2,7 @@
 #include "pyramid.h"
 #include "layout.h"
 #include "level.h"
+#include "paths.h"
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
@@ -15,27 +16,51 @@
 
 Scene::Scene()
 {
-    selector_img = al_load_bitmap("img/selector.png");
-    selector_inv_img = al_load_bitmap("img/selector_inactive.png");
+    const auto selector_img_path = get_full_data_path("img/selector.png");
+    const auto selector_inv_img_path =
+        get_full_data_path("img/selector_inactive.png");
 
-    enemy_img0 = al_load_bitmap("img/enemy0.png");
-    enemy_img01 = al_load_bitmap("img/enemy01.png");
-    enemy_img1 = al_load_bitmap("img/enemy1.png");
-    enemy_img11 = al_load_bitmap("img/enemy11.png");
-    enemy_img2 = al_load_bitmap("img/enemy2.png");
-    enemy_img21 = al_load_bitmap("img/enemy21.png");
+    const auto enemy_img0_path = get_full_data_path("img/enemy0.png");
+    const auto enemy_img01_path = get_full_data_path("img/enemy01.png");
+    const auto enemy_img1_path = get_full_data_path("img/enemy1.png");
+    const auto enemy_img11_path = get_full_data_path("img/enemy11.png");
+    const auto enemy_img2_path = get_full_data_path("img/enemy2.png");
+    const auto enemy_img21_path = get_full_data_path("img/enemy21.png");
 
-    hero_img = al_load_bitmap("img/hero.png");
-    hero_back_img = al_load_bitmap("img/hero_back.png");
-    hero_side_img = al_load_bitmap("img/hero_side.png");
-    hero_side1_img = al_load_bitmap("img/hero_side1.png");
-    background = al_load_bitmap("img/background.png");
+    const auto hero_img_path = get_full_data_path("img/hero.png");
+    const auto hero_back_img_path = get_full_data_path("img/hero_back.png");
+    const auto hero_side_img_path = get_full_data_path("img/hero_side.png");
+    const auto hero_side1_img_path = get_full_data_path("img/hero_side1.png");
+    const auto background_path = get_full_data_path("img/background.png");
 
-    audio_death = al_load_sample("audio/death.wav");
-    audio_land = al_load_sample("audio/land.wav");
-    audio_push = al_load_sample("audio/push.wav");
-    audio_climb = al_load_sample("audio/climb.wav");
-    audio_hero_death = al_load_sample("audio/hero_death.wav");
+    const auto audio_death_path = get_full_data_path("audio/death.wav");
+    const auto audio_land_path = get_full_data_path("audio/land.wav");
+    const auto audio_push_path = get_full_data_path("audio/push.wav");
+    const auto audio_climb_path = get_full_data_path("audio/climb.wav");
+    const auto audio_hero_death_path =
+        get_full_data_path("audio/hero_death.wav");
+
+    selector_img = al_load_bitmap(selector_img_path.c_str());
+    selector_inv_img = al_load_bitmap(selector_inv_img_path.c_str());
+
+    enemy_img0 = al_load_bitmap(enemy_img0_path.c_str());
+    enemy_img01 = al_load_bitmap(enemy_img01_path.c_str());
+    enemy_img1 = al_load_bitmap(enemy_img1_path.c_str());
+    enemy_img11 = al_load_bitmap(enemy_img11_path.c_str());
+    enemy_img2 = al_load_bitmap(enemy_img2_path.c_str());
+    enemy_img21 = al_load_bitmap(enemy_img21_path.c_str());
+
+    hero_img = al_load_bitmap(hero_img_path.c_str());
+    hero_back_img = al_load_bitmap(hero_back_img_path.c_str());
+    hero_side_img = al_load_bitmap(hero_side_img_path.c_str());
+    hero_side1_img = al_load_bitmap(hero_side1_img_path.c_str());
+    background = al_load_bitmap(background_path.c_str());
+
+    audio_death = al_load_sample(audio_death_path.c_str());
+    audio_land = al_load_sample(audio_land_path.c_str());
+    audio_push = al_load_sample(audio_push_path.c_str());
+    audio_climb = al_load_sample(audio_climb_path.c_str());
+    audio_hero_death = al_load_sample(audio_hero_death_path.c_str());
 
     restart(0);
 }

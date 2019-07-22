@@ -14,6 +14,8 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
 
+#include "paths.h"
+
 bool done;
 ALLEGRO_EVENT_QUEUE *event_queue;
 ALLEGRO_TIMER *timer;
@@ -81,7 +83,8 @@ void init(void)
 
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
-    font = al_load_ttf_font("fonts/Atari_Full.ttf", 8, 0);
+    const auto font_path = get_full_data_path("fonts/Atari_Full.ttf");
+    font = al_load_ttf_font(font_path.c_str(), 8, 0);
 
     ALLEGRO_TRANSFORM trans;
     al_identity_transform(&trans);

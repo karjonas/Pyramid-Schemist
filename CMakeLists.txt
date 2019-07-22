@@ -2,11 +2,15 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Pyramid_Schemist)
 
+set(DATA_DIR ${PROJECT_SOURCE_DIR} CACHE PATH "Directory for game data")
+add_definitions(-DDATA_DIR="${DATA_DIR}")
+
 set(SOURCES_CPP
   src/main.cpp
   src/pyramid.cpp
   src/scene.cpp
   src/level.cpp
+  src/paths.cpp
 )
 
 add_executable(Pyramid_Schemist ${SOURCES_CPP})
@@ -24,3 +28,6 @@ set(LIBS
 target_link_libraries(Pyramid_Schemist ${LIBS})
 
 install(TARGETS Pyramid_Schemist DESTINATION bin)
+install(DIRECTORY audio DESTINATION share/Pyramid_Schemist)
+install(DIRECTORY fonts DESTINATION share/Pyramid_Schemist)
+install(DIRECTORY img DESTINATION share/Pyramid_Schemist)
