@@ -40,3 +40,15 @@ luac.out
 *.hex
 
 build/
+
+# QT Creator
+*.cflags
+*.config
+*.creator
+*.creator.user
+*.cxxflags
+*.files
+*.includes
+
+# AppImage
+*.AppImage
