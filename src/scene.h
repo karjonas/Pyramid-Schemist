@@ -22,7 +22,7 @@ public:
     void update_enemies(double dt, Pyramid &pyr, std::vector<Enemy> &enemies);
 
     void move_enemies_across_edges();
-    void restart(size_t level_idx);
+    void restart(std::size_t level_idx);
 
     void draw_text(const char *str);
 
@@ -58,14 +58,14 @@ public:
     ALLEGRO_SAMPLE *audio_hero_death;
 
     double last_hole_time = 0.0;
-    size_t curr_pyramid = 0;
+    std::size_t curr_pyramid = 0;
 
     ALLEGRO_FONT *font;
     bool dead = false;
     bool dead_last = false;
-    size_t hero_pos_row = 7;
-    size_t hero_pos_col = 6;
-    size_t curr_level = 0;
+    std::size_t hero_pos_row = 7;
+    std::size_t hero_pos_col = 6;
+    std::size_t curr_level = 0;
 
     double restart_countdown = 0.0;
     double show_level_countdown = 0.0;

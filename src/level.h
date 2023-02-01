@@ -12,4 +12,4 @@ struct Level
     std::array<std::vector<Enemy>, 4> pyramid_enemies;
 };
 
-Level generate_level(size_t level_idx);
+Level generate_level(std::size_t level_idx);
