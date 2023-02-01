@@ -52,3 +52,4 @@ build/
 
 # AppImage
 *.AppImage
+CMakeLists.txt.user
