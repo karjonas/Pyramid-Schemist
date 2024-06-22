@@ -1,3 +1,4 @@
+#include "layout.h"
 #include "scene.h"
 
 #include <algorithm>
@@ -67,7 +68,7 @@ void init(void)
     ALLEGRO_DISPLAY_MODE disp_data;
     al_get_display_mode(0, &disp_data);
 
-    al_set_new_display_flags(ALLEGRO_WINDOWED);
+    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE);
     // display = al_create_display(disp_data.width, disp_data.height);
     display = al_create_display(640, 400);
     if (!display)
@@ -150,6 +151,25 @@ void game_loop(void)
             {
                 done = true;
             }
+            else if (ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE)
+            {
+                int width = ev.display.width;
+                int height = ev.display.height;
+                float scale_x = float(width) / L_WIDTH;
+                float scale_y = float(height) / L_HEIGHT;
+                float scale = std::max(int(std::min(scale_x, scale_y)), 1);
+                float scaled_width = L_WIDTH * scale;
+                float scaled_height = L_HEIGHT * scale;
+                int offset_x = (width - scaled_width) * 0.5f;
+                int offset_y = (height - scaled_height) * 0.5f;
+
+                ALLEGRO_TRANSFORM trans;
+                al_identity_transform(&trans);
+                al_scale_transform(&trans, scale, scale);
+                al_translate_transform(&trans, offset_x, offset_y);
+                al_use_transform(&trans);
+                al_acknowledge_resize(display);
+            }
         }
 
         if (key_down[ALLEGRO_KEY_ESCAPE])
@@ -169,7 +189,8 @@ void game_loop(void)
 
         scene.tick(key_pressed, key_repeat);
         al_clear_to_color(al_map_rgb(0, 0, 0));
-        scene.draw();
+        scene.draw(al_get_display_width(display),
+                   al_get_display_height(display));
         al_flip_display();
 
         for (auto &pressed : key_pressed)

@@ -11,6 +11,7 @@
 #include <allegro5/allegro_audio.h>
 
 #include <cmath>
+#include <random>
 
 #define HOLE_RETRY_TIME 1.0
 
@@ -31,7 +32,7 @@ Scene::Scene()
     const auto hero_back_img_path = get_full_data_path("img/hero_back.png");
     const auto hero_side_img_path = get_full_data_path("img/hero_side.png");
     const auto hero_side1_img_path = get_full_data_path("img/hero_side1.png");
-    const auto background_path = get_full_data_path("img/background.png");
+    const auto sand_path = get_full_data_path("img/sand.png");
 
     const auto audio_death_path = get_full_data_path("audio/death.wav");
     const auto audio_land_path = get_full_data_path("audio/land.wav");
@@ -54,7 +55,7 @@ Scene::Scene()
     hero_back_img = al_load_bitmap(hero_back_img_path.c_str());
     hero_side_img = al_load_bitmap(hero_side_img_path.c_str());
     hero_side1_img = al_load_bitmap(hero_side1_img_path.c_str());
-    background = al_load_bitmap(background_path.c_str());
+    sand = al_load_bitmap(sand_path.c_str());
 
     audio_death = al_load_sample(audio_death_path.c_str());
     audio_land = al_load_sample(audio_land_path.c_str());
@@ -383,24 +384,124 @@ void Scene::draw_text(const char* str)
                  ALLEGRO_ALIGN_CENTRE, str);
 }
 
-void Scene::draw()
+void Scene::generate_stars()
 {
-    constexpr int w = 21;
-    constexpr int h = 16;
+    stars.clear();
 
-    constexpr int totw = w * PYR_COLS;
-    constexpr int toth = h * PYR_ROWS;
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> distribution(0,
+                                                                          1000);
+    std::uniform_int_distribution<std::mt19937::result_type> distribution6(0,
+                                                                           6);
 
-    constexpr int offsetw = (L_WIDTH - totw) / 2;
-    constexpr int offseth = (L_HEIGHT - toth) / 2;
+    for (int i = 0; i < 1000; ++i)
+    {
+        Star star;
+        star.x = distribution(rng);
+        star.y = distribution(rng);
+        if (distribution6(rng) < 4)
+        {
+            star.color = al_map_rgb(252, 228, 160);
+        }
+        else
+        {
+            star.color = al_map_rgb(136, 112, 0);
+        }
+        stars.push_back(star);
+    }
+}
 
-    al_draw_bitmap(background, 0, 0, 0);
+void Scene::draw_stars(int width, int height)
+{
+    if (stars.empty())
+    {
+        generate_stars();
+    }
+
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> distribution(0,
+                                                                          500);
+
+    for (Star& star : stars)
+    {
+        star.sparkle_countdown = std::max(0, star.sparkle_countdown - 1);
+        const bool sparkle = distribution(rng) == 0;
+        if (sparkle)
+        {
+            star.sparkle_countdown = 30;
+        }
+    }
+
+    for (int i = -1; i < (width + 1000) / 1000; i++)
+    {
+        for (int j = -1; j < (height + 1000) / 1000; j++)
+        {
+            for (const Star& star : stars)
+            {
+                int x = 1000 * i;
+                int y = 1000 * j;
+                ALLEGRO_COLOR color = star.sparkle_countdown > 0
+                                          ? al_map_rgb(255, 255, 255)
+                                          : star.color;
+                al_draw_filled_rectangle(x + star.x, y + star.y, x + star.x + 1,
+                                         y + star.y + 1, color);
+            }
+        }
+    }
+}
+
+void Scene::draw_sand(int width, int height)
+{
+    const ALLEGRO_COLOR sand_color = al_map_rgb(136, 112, 0);
+
+    constexpr int center_x = L_WIDTH / 2;
+    const int min_x = (L_WIDTH - width) / 2;
+    const int max_x = (L_WIDTH + width) / 2;
+    const int max_y = (L_HEIGHT + height) / 2;
+
+    al_draw_filled_rectangle(min_x, L_HEIGHT, max_x, L_HEIGHT + max_y,
+                             sand_color);
+
+    const int image_width = al_get_bitmap_width(sand);
+    const int image_height = al_get_bitmap_height(sand);
+    const int image_y = L_HEIGHT;
+
+    al_draw_bitmap(sand, 0, image_y, 0);
+
+    bool done = false;
+    int i = 0;
+    while (!done)
+    {
+        ++i;
+        done = true;
+        int end_x = (1 - i) * image_width;
+        if (end_x >= min_x)
+        {
+            done = false;
+            al_draw_bitmap(sand, -i * image_width, image_y, 0);
+        }
+
+        int start_x = i * image_width;
+        if (start_x <= max_x)
+        {
+            al_draw_bitmap(sand, i * image_width, image_y, 0);
+            done = false;
+        }
+    }
+}
+
+void Scene::draw(int width, int height)
+{
+    draw_stars(width, height);
 
     auto& pyr = pyramids[curr_pyramid];
     pyr.draw();
 
-    int h_x = offsetw + w * hero_pos_col;
-    int h_y = L_HEIGHT - (offseth + h * hero_pos_row);
+    int h_x = Pyramid::get_block_x(hero_pos_col);
+    int h_y = Pyramid::get_block_y(hero_pos_row);
+
     if (curr_pyramid == 0)
         al_draw_bitmap(hero_img, h_x, h_y, 0);
     else if (curr_pyramid == 1)
@@ -413,21 +514,13 @@ void Scene::draw()
     for (auto& e : pyramid_enemies[curr_pyramid])
     {
         auto image = enemy_sprite_idx == 0 ? e.image : e.image1;
-
-        al_draw_bitmap(image, offsetw + w * e.pos_col_exact - w / 2,
-                       L_HEIGHT - (offseth + h * e.pos_row_exact), 0);
-        int x1 = offsetw + e.pos_col * w;
-        int y1 = L_HEIGHT - (offseth + h * e.pos_row);
-        int x2 = x1 + w;
-        int y2 = y1 + h;
-
-        //      al_draw_rectangle(x1+0.5,y1+0.5,x2+0.5,y2+0.5,al_map_rgb(255,0,0),
-        //      1.0);
+        al_draw_bitmap(image, Pyramid::get_block_x(e.pos_col_exact - 0.5),
+                       Pyramid::get_block_y(e.pos_row_exact), 0);
     }
 
     auto sel_img = selector_active ? selector_img : selector_inv_img;
-    al_draw_bitmap(sel_img, offsetw + w * selector_pos.first - 2,
-                   L_HEIGHT - (offseth + h * selector_pos.second) - 2, 0);
+    al_draw_bitmap(sel_img, Pyramid::get_block_x(selector_pos.first) - 2,
+                   Pyramid::get_block_y(selector_pos.second) - 2, 0);
 
     if (draw_level)
     {
@@ -443,6 +536,17 @@ void Scene::draw()
         snprintf(str, 200, "You Died, Restarting in %d", secs_left + 1);
         draw_text(str);
     }
+
+    draw_sand(width, height);
+
+#if 0
+    // Origo
+    al_draw_rectangle(-1000, 0, 1000, 0, al_map_rgb(255, 0, 0), 1);
+    al_draw_rectangle(0, -1000, 0, 1000, al_map_rgb(0, 255, 0), 1);
+
+    // Viewport
+    al_draw_rectangle(0, 0, L_WIDTH, L_HEIGHT, al_map_rgb(0, 0, 255), 1);
+#endif
 }
 
 void Scene::move_selector(int col_dt, int row_dt)

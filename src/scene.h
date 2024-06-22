@@ -5,10 +5,19 @@
 
 #include <utility>
 #include <vector>
+#include <allegro5/color.h>
 
 struct ALLEGRO_KEYBOARD_STATE;
 struct ALLEGRO_FONT;
 struct ALLEGRO_SAMPLE;
+
+struct Star
+{
+    int x = 0;
+    int y = 0;
+    int sparkle_countdown = 0;
+    ALLEGRO_COLOR color;
+};
 
 class Scene
 {
@@ -16,7 +25,7 @@ public:
     Scene();
 
     void tick(bool key_pressed[], bool key_repeat[]);
-    void draw();
+    void draw(int width, int height);
 
     void move_selector(int col_dt, int row_dt);
     void update_enemies(double dt, Pyramid &pyr, std::vector<Enemy> &enemies);
@@ -24,9 +33,13 @@ public:
     void move_enemies_across_edges();
     void restart(std::size_t level_idx);
 
+    void draw_sand(int width, int height);
     void draw_text(const char *str);
+    void draw_stars(int width, int height);
+    void generate_stars();
 
     std::array<Pyramid, 4> pyramids;
+    std::vector<Star> stars;
 
     std::pair<int, int> selector_pos = {4, 3};
     ALLEGRO_BITMAP *selector_img;
@@ -49,7 +62,7 @@ public:
     ALLEGRO_BITMAP *hero_side_img;
     ALLEGRO_BITMAP *hero_side1_img;
 
-    ALLEGRO_BITMAP *background;
+    ALLEGRO_BITMAP *sand;
 
     ALLEGRO_SAMPLE *audio_death;
     ALLEGRO_SAMPLE *audio_land;

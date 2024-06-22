@@ -23,6 +23,8 @@ public:
     bool invert_block_at(int col, int row, double time);
 
     void update(double dt);
+    static int get_block_y(double row);
+    static int get_block_x(double col);
 
     ALLEGRO_BITMAP *block_img;
     ALLEGRO_BITMAP *block_in_img;

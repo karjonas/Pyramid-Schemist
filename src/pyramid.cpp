@@ -24,49 +24,48 @@ Pyramid::Pyramid()
     }
 }
 
-void Pyramid::draw()
+int Pyramid::get_block_y(double row)
+{
+    constexpr int h = 16;
+    constexpr int pyramid_height = PYR_ROWS * h;
+    return pyramid_height - (h * (row + 1));
+}
+
+int Pyramid::get_block_x(double col)
 {
     constexpr int w = 21;
-    constexpr int h = 16;
+    return w + w * col;
+}
 
-    constexpr int totw = w * PYR_COLS;
-    constexpr int toth = h * PYR_ROWS;
-
-    constexpr int offsetw = (L_WIDTH - totw) / 2;
-    constexpr int offseth = (L_HEIGHT - toth) / 2;
-
+void Pyramid::draw()
+{
     for (int r = 0; r < PYR_ROWS; r++)
     {
         for (int c = 0; c < PYR_COLS; c++)
         {
+            const int block_y = get_block_y(r);
+            const int block_x = get_block_x(c);
             if (blocks[r][c] == BLOCK)
             {
-                al_draw_bitmap(block_img, offsetw + w * c,
-                               L_HEIGHT - (offseth + h * r), 0);
+                al_draw_bitmap(block_img, block_x, block_y, 0);
             }
             else if (blocks[r][c] == LADDER)
             {
-                al_draw_bitmap(ladder_img, offsetw + w * c,
-                               L_HEIGHT - (offseth + h * r), 0);
+                al_draw_bitmap(ladder_img, block_x, block_y, 0);
             }
             else if (blocks[r][c] == BLOCK_IN)
             {
-                al_draw_bitmap(block_in_img, offsetw + w * c,
-                               L_HEIGHT - (offseth + h * r), 0);
+                al_draw_bitmap(block_in_img, block_x, block_y, 0);
             }
             else if (blocks[r][c] == BLOCK_IN_SNAKE)
             {
-                al_draw_bitmap(block_in_img, offsetw + w * c,
-                               L_HEIGHT - (offseth + h * r), 0);
-                al_draw_bitmap(snake_img, offsetw + w * c,
-                               L_HEIGHT - (offseth + h * r), 0);
+                al_draw_bitmap(block_in_img, block_x, block_y, 0);
+                al_draw_bitmap(snake_img, block_x, block_y, 0);
             }
             else if (blocks[r][c] == SNAKE)
             {
-                al_draw_bitmap(block_img, offsetw + w * c,
-                               L_HEIGHT - (offseth + h * r), 0);
-                al_draw_bitmap(snake_img, offsetw + w * c,
-                               L_HEIGHT - (offseth + h * r), 0);
+                al_draw_bitmap(block_img, block_x, block_y, 0);
+                al_draw_bitmap(snake_img, block_x, block_y, 0);
             }
         }
     }
