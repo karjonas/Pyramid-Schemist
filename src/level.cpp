@@ -60,12 +60,12 @@ pyr_arr_rc<BlockType> create_block_front()
                EMPTY, EMPTY, EMPTY, EMPTY}}}};
 }
 
-Level generate_level(size_t level_idx)
+Level generate_level(std::size_t level_idx)
 {
     Level l;
 
     bool dir_flip = true;
-    for (size_t i = 0; i < (level_idx + 1); i++)
+    for (std::size_t i = 0; i < (level_idx + 1); i++)
     {
         Enemy e;
         e.pos_row = 0;

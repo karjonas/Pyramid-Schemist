@@ -327,7 +327,7 @@ void Scene::move_enemies_across_edges()
     }
 }
 
-void Scene::restart(size_t level_idx)
+void Scene::restart(std::size_t level_idx)
 {
     dead = false;
 

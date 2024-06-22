@@ -14,6 +14,13 @@ set(SOURCES_CPP
   src/scene.cpp
   src/level.cpp
   src/paths.cpp
+  src/block.h
+  src/enemy.h
+  src/layout.h
+  src/level.h
+  src/paths.h
+  src/pyramid.h
+  src/scene.h
 )
 
 add_executable(Pyramid_Schemist ${SOURCES_CPP})
